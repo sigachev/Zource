@@ -1,0 +1,145 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<!-- Header -->
+<th:block th:include="blocks/header/header"></th:block>
+<!-- /Header -->
+
+<!--Breadcrumb-->
+<th:block th:include="blocks/breadcrumb"></th:block>
+<!--/Breadcrumb-->
+
+
+<!--MAIN CONTENT-->
+<div class="container-fluid limited mb-5">
+    <div class="row">
+        <div class="col-md-9 mb-4">
+            <div class="title"><span>About Us</span></div>
+            <img src="/images/banners/kitchen_design_service.jpg" alt="Our Services"
+                 class="img-thumbnail img-fluid w-100 mb-3">
+            <blockquote class="blockquote my-3 text-center">
+                <p>You dream, we design – this is our ultimate vision. MASS TILE specializes in offering tiles, kitchen
+                    cabinets, lightning and bathroom fixtures. If you are planning home renovation, we are here for you
+                    to enlighten you on details of our design service.</p>
+            </blockquote>
+
+            <!--Accordion-->
+            <div id="accordion" class="my-3" role="tablist">
+                <div class="card mb-1">
+                    <div class="card-header p-2" role="tab" id="headingOne">
+                        <a class="collapsed text-secondary font-weight-bold" data-toggle="collapse" href="#collapseOne"
+                           aria-expanded="false" aria-controls="collapseOne">
+                            Kitchen Cabinets
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne"
+                         data-parent="#accordion">
+                        <div class="card-body">
+                            <p>We offer top quality products, experienced kitchen designing and installing service at an
+                                affordable price.</p>
+                            <p>We are also present on social media. Go ahead and follow us on Houzz and connect with us
+                                on Facebook for design inspiration, hints and tips.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-header p-2" role="tab" id="headingTwo">
+                        <a class="collapsed text-secondary font-weight-bold" data-toggle="collapse" href="#collapseTwo"
+                           aria-expanded="false" aria-controls="collapseTwo">
+                            Tile Selection
+                        </a>
+                    </div>
+                    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo"
+                         data-parent="#accordion">
+                        <div class="card-body">
+
+                            <p> We do our best to ensure the installation of your new tiles or kitchen is undertaken
+                                with fewer worries in the quickest and most efficient way.</p>
+                            <p>Our excellent project management, quality installation and overall customer service that
+                                is specifically tailored to every client are often mentioned as why our customers choose
+                                and recommend us.</p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-header p-2" role="tab" id="headingFive">
+                        <a class="collapsed text-secondary font-weight-bold" data-toggle="collapse" href="#collapseFive"
+                           aria-expanded="false" aria-controls="collapseFive">
+                            Installation and Project Management
+                        </a>
+                    </div>
+                    <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFive"
+                         data-parent="#accordion">
+                        <div class="card-body">
+
+                            <p> We do our best to ensure the installation of your new tiles or kitchen is undertaken
+                                with fewer worries in the quickest and most efficient way.</p>
+                            <p>Our excellent project management, quality installation and overall customer service that
+                                is specifically tailored to every client are often mentioned as why our customers choose
+                                and recommend us.</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--//Accordion-->
+
+
+            <!--Matterport-->
+            <div class="row my-2">
+                <div class="col-md-6 justify-content-md-center text-center">
+                    <h5 class="my-2">Needham Showroom</h5>
+                    <iframe src="https://my.matterport.com/show/?m=kfDdz6QLkdP" width="450" height="300"
+                            allowfullscreen></iframe>
+                </div>
+
+                <div class="col-md-6 justify-content-md-center text-center">
+                    <h5 class="my-2">Sharon Showroom/Warehouse</h5>
+                    <iframe src="https://my.matterport.com/show/?m=WGDzZjfQ96e" width="450" height="300"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            <!--Matterport-->
+
+
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="title"><span>Testimonials</span></div>
+            <a class="houzz-review-widget media" data-pro="bostonkitchens" data-hzid="41798" data-locale="en-US"
+               href="https://www.houzz.com">Houzz</a>
+            <script>(function (d, s, id) {
+                if (!d.getElementById(id)) {
+                    var js = d.createElement(s);
+                    js.id = id;
+                    js.async = true;
+                    js.src = "//platform.houzz.com/js/widgets.js?" + (new Date().getTime());
+                    var ss = d.getElementsByTagName(s)[0];
+                    ss.parentNode.insertBefore(js, ss);
+                }
+            })(document, "script", "houzzwidget-js");</script>
+
+        </div>
+
+    </div>
+
+
+    <!-- GOOGLE MAP-->
+    <th:block th:include="blocks/widgets/googleMap"></th:block>
+    <!-- /GOOGLE MAP-->
+
+</div>
+
+<!--/MAIN CONTENT-->
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+

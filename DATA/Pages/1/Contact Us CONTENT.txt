@@ -1,0 +1,30 @@
+           <form th:object="${emailForm}" th:action="@{/contactFormEmail}" method="post">
+		    <fieldset>
+			
+			<div th:if="${errorMessage!= null}" class="error-message" th:utext="${errorMessage}">
+			
+				<div class="form-group">
+                    <label for="InputName">Your Name (*)</label>
+                    <input type="text" th:field="*{name}" class="form-control" placeholder="Enter name">
+					<span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="InputEmail1">Email address (*)</label>
+                    <input type="email" th:field="*{email}" class="form-control" required="required" placeholder="Enter email">
+					<span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="InputSubject">Subject</label>
+                    <input type="text" th:field="*{subject}" class="form-control" placeholder="Enter subject">
+					<span class="text-danger" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="InputMessage">Message (*)</label>
+                    <textarea th:field="*{message}" rows="12" class="form-control" ></textarea>
+					<span class="text-danger" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></span>
+                </div>
+				</fieldset>
+				
+                <button type="submit" class="btn btn-theme btn-sm">Submit</button>
+				
+     		</form>

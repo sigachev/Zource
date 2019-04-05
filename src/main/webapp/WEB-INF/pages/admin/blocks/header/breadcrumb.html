@@ -1,0 +1,17 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2 th:text="${info.title}"></h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" th:each="bc : ${info.breadcrumb}"
+                th:utext="|<a href='${bc.value}'> ${bc.key} </a>|"
+                th:classappend="${#httpServletRequest.getRequestURI() == '__${bc.value}__' ? 'active':''}"
+                th:styleappend="${#httpServletRequest.getRequestURI() == '__${bc.value}__' ? 'font-weight: bold;':''}">
+
+            </li>
+
+
+        </ol>
+
+
+    </div>
+</div>

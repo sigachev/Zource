@@ -1,0 +1,219 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<html xmlns:th="http://www.w3.org/1999/html">
+
+<!--Header-->
+<th:block th:include="admin/blocks/header/head"></th:block>
+<!--//Header-->
+
+<body class="fixed-sidebar pace-done">
+
+<th:block th:include="admin/blocks/header/progress_loader"></th:block>
+
+<div id="wrapper">
+
+    <!--Side navigation-->
+    <th:block th:include="admin/blocks/header/side_nav"></th:block>
+    <!--//Side navigation-->
+
+    <div id="page-wrapper" class="gray-bg">
+
+        <!--TOP SEARCH BAR-->
+        <th:block th:include="admin/blocks/header/top_search"></th:block>
+        <!--//TOP SEARCH BAR-->
+
+        <!--Breadcrumb-->
+        <th:block th:include="admin/blocks/header/breadcrumb"></th:block>
+        <!--//BreadcrumbR-->
+
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+
+            <form th:object="${productForm}" th:action="@{/admin/product}" method="POST">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="tabs-container">
+                            <ul class="nav nav-tabs">
+                                <li><a class="nav-link active" data-toggle="tab" href="#tab-1"> Product info</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+
+
+                                        <div th:if="${errorMessage!= null}" class="error-message"
+                                             th:utext="${errorMessage}">
+                                        </div>
+
+
+                                        <input th:field="*{newProduct}" type="hidden"/>
+
+                                        <input type="hidden" th:field="*{id}"/>
+
+                                        <fieldset>
+
+
+                                            <!--PRODUCT NAME-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Name:</label>
+
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" th:field="*{name}"
+                                                           placeholder="Product Name">
+                                                    <span class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                                          th:errors="*{name}">..</span>
+                                                </div>
+                                            </div>
+
+                                            <!--SKU-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">SKU:</label>
+
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" th:field="*{SKU}"
+                                                           placeholder="SKU number">
+                                                    <span class="text-danger" th:if="${#fields.hasErrors('SKU')}"
+                                                          th:errors="*{SKU}">..</span>
+                                                </div>
+                                            </div>
+
+                                            <!--ENABLED-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Enabled:</label>
+                                                <div class="col-lg-offset-2 col-lg-10">
+                                                    <div class="i-checks">
+                                                        <div class="icheckbox_square-green" style="position: relative;">
+                                                            <input type="checkbox" th:field="*{enabled}"
+                                                                   style="position: absolute; opacity: 0;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <!--PRICE-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Price:</label>
+
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" th:field="*{price}"
+                                                           placeholder="$$$">
+                                                    <span class="text-danger" th:if="${#fields.hasErrors('price')}"
+                                                          th:errors="*{price}">..</span>
+                                                </div>
+                                            </div>
+
+
+                                            <!--HTML Description-->
+                                            <div class="form-group row"><label class="col-sm-2 col-form-label">Description:</label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="summernote" th:field="*{description}"></textarea>
+                                                </div>
+                                            </div>
+
+
+                                            <!--Brand-->
+                                            <!--        <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Brand:</label>
+                                                        <div class="col-sm-5">
+
+                                                            <select th:object="${pageForm}" th:field="*{menu.id}" type="select" class="form-control">
+
+                                                                &lt;!&ndash;  <option th:value="NULL" th:text="${-&#45;&#45;Select Type-&#45;&#45;}"></option>&ndash;&gt;
+                                                                <option th:each="m : ${pageMenus}"
+                                                                        th:value="${m.id}"
+                                                                        th:text="${#strings.capitalize(m.name)}">
+                                                                </option>
+
+                                                            </select>
+                                                            <span class="text-danger" th:if="${#fields.hasErrors('menu')}"
+                                                                  th:errors="*{menu}">..</span>
+                                                        </div>
+                                                    </div>-->
+
+
+                                            <!--HR-LINE-DASHED-->
+                                            <div class="hr-line-dashed"></div>
+
+                                            <!--
+                                                                                        &lt;!&ndash;META TITLE&ndash;&gt;
+                                                                                        <div class="form-group row">
+                                                                                            <label class="col-sm-2 col-form-label">Meta Title:</label>
+
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="text" class="form-control" th:field="*{metaTitle}" placeholder="">
+                                                                                                <span class="text-danger" th:if="${#fields.hasErrors('metaTitle')}" th:errors="*{metaTitle}">..</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        &lt;!&ndash;META DESCRIPTION&ndash;&gt;
+                                                                                        <div class="form-group row">
+                                                                                            <label class="col-sm-2 col-form-label">Meta Description:</label>
+
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="text" class="form-control" th:field="*{metaDescription}" placeholder=""/>
+                                                                                                <span class="text-danger" th:if="${#fields.hasErrors('metaDescription')}" th:errors="*{metaDescription}">..</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        &lt;!&ndash;META KEYWORDS&ndash;&gt;
+                                                                                        <div class="form-group row">
+                                                                                            <label class="col-sm-2 col-form-label">Meta Keywords:</label>
+
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="text" class="form-control" th:field="*{metaKeywords}" placeholder=""/>
+                                                                                                <span class="text-danger" th:if="${#fields.hasErrors('metaKeywords')}" th:errors="*{metaKeywords}">..</span>
+                                                                                            </div>
+                                                                                        </div>
+                                            -->
+
+                                            <div class="hr-line-dashed"></div>
+
+
+                                        </fieldset>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="ibox-content">
+
+
+                            <div class="form-group row">
+                                <div class="col-9"></div>
+                                <div class="col-sm-3 col-sm-offset-2 ">
+                                    <button class="btn btn-white btn-sm" type="reset">Cancel</button>
+                                    <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!--FOOTER-->
+        <th:block th:include="admin/blocks/footer/footer"></th:block>
+        <!--//FOOTER-->
+
+    </div>
+</div>
+
+<!--FOOTER JAVA SCRIPT FILES-->
+<th:block th:include="admin/pages/blocks/footer_js"></th:block>
+<!--//FOOTER JAVA SCRIPT FILES-->
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<!-- Header -->
+<th:block th:include="blocks/header/header"></th:block>
+<!-- /Header -->
+
+
+<div class="container-fluid limited mt-5">
+
+    <div class="row">
+
+        <div class="col-md-8 mb-3">
+            <div class="title"><span th:text="${page.title}"></span></div>
+
+            <block th:utext="${page.content}"/>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="title"><span th:text="${page.menu.title}"></span></div>
+
+            <block th:utext="${page.menu.content}"/>
+            <block th:utext="${page.sideContent}"/>
+
+            <!-- GOOGLE MAP-->
+            <!--<th:block th:include="blocks/widgets/googleMap"></th:block>-->
+            <!-- /GOOGLE MAP-->
+        </div>
+
+
+    </div>
+</div>
+
+
+<!--MAIN CONTENT-->
+<!--<div calss="row">
+    <div class="col-12 mb-4">
+        <div class="title"><span th:text="${page.title}">Frequently Asked Questions (FAQ)</span></div>
+    </div>
+
+</div>
+    <th:block th:utext="${page.content}"></th:block>
+
+</div>-->
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+
+
+

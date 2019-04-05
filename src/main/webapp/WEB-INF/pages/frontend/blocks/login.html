@@ -1,0 +1,26 @@
+<!-- /login?error=true -->
+<!--<th:block th:if="${#session != null && #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}">
+    <div th:if= "${#request.getParameter('error') == 'true'}"
+         style="color: red; margin: 10px 0px;">
+        Login Failed!!!<br /> Reason :
+        <span th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}"></span>
+    </div>
+</th:block>-->
+
+<form class="px-4 py-3" method="POST" th:action="@{/j_spring_security_check}">
+    <div class="form-group">
+        <label>Email address</label>
+        <input type="userName" class="form-control" name="userName" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+    <button type="reset" class="btn">Reset</button>
+</form>
+
+<span class="error-message" th:utext="${error}"></span>
+<hr class="dropdown-divider">
+<a class="dropdown-item" href="#">Have account? Sign up</a>
+<a class="dropdown-item" href="#">Forgot password?</a>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="blocks/header/head"></th:block>
+
+</head>
+<body>
+
+<!-- Top Header -->
+<th:block th:include="blocks/header/top_header"></th:block>
+<!-- /Top Header -->
+
+<!-- Middle Header -->
+<th:block th:include="blocks/header/nav_header"></th:block>
+<!-- /Middle Header -->
+
+
+<!-- Home Slider -->
+<th:block th:include="blocks/pages/home/home_slider"></th:block>
+<!-- /Home Slider -->
+
+<div class="container-fluid limited mt-5">
+
+    <!-- Service Block -->
+    <div class="row no-gutters my-5">
+        <div class="col-sm-6 col-lg-3">
+            <div class="media service-block">
+                <div class="service-block-icon">
+                    <i class="material-icons">local_shipping</i>
+                </div>
+                <div class="media-body">
+                    <h6>FREE SHIPPING &AMP; RETURN</h6>
+                    <div class="service-block-desc">Get free shipping for all orders $99 or more</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="media service-block">
+                <div class="service-block-icon">
+                    <i class="material-icons">refresh</i>
+                </div>
+                <div class="media-body">
+                    <h6>MONEY BACK GUARANTEE</h6>
+                    <div class="service-block-desc">Get the item you ordered, or your money back</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="media service-block">
+                <div class="service-block-icon">
+                    <i class="material-icons">security</i>
+                </div>
+                <div class="media-body">
+                    <h6>100% SECURE PAYMENT</h6>
+                    <div class="service-block-desc">Your transaction are secure with SSL Encryption</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="media service-block">
+                <div class="service-block-icon">
+                    <i class="material-icons">phone</i>
+                </div>
+                <div class="media-body">
+                    <h6>ONLINE SUPPORT 24/7</h6>
+                    <div class="service-block-desc">Chat with experts or have us call you right away</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Service Block -->
+
+    <!-- Top Categories -->
+    <th:block th:include="blocks/pages/home/top_categories"></th:block>
+    <!-- /Top Categories -->
+
+    <!-- Sale -->
+    <th:block th:include="blocks/pages/home/sale"></th:block>
+    <!-- /Sale -->
+
+    <!-- Top Brands -->
+    <th:block th:include="blocks/pages/home/brands_slider"></th:block>
+    <!-- /Top Brands -->
+
+    <!-- New In -->
+    <th:block th:include="blocks/pages/home/new_products"></th:block>
+    <!-- /New In -->
+
+    <div class="row mb-3 compact">
+
+        <!-- Recent Reviews -->
+        <th:block th:include="blocks/pages/home/recent_reviews"></th:block>
+        <!-- /Recent Reviews -->
+
+        <!-- Explore Store -->
+        <th:block th:include="blocks/pages/home/explore_store"></th:block>
+        <!-- ./Explore Store -->
+
+    </div>
+
+</div>
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+
+

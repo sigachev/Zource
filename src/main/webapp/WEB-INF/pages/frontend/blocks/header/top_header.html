@@ -1,0 +1,91 @@
+<div class="top-header" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid limited">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex justify-content-between">
+                    <nav class="nav d-none d-lg-flex">
+                        <a class="nav-link" href="shop.html"><i class="material-icons">notifications_none</i> Free
+                            shipping on online orders!</a>
+                    </nav>
+                    <nav class="nav ml-auto">
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle no-caret" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false"><i
+                                    class="material-icons mr-1">help_outline</i>Information</a>
+                            <div class="dropdown-menu animate">
+                                <a class="dropdown-item" href="/about_us">About Us</a>
+                                <div class="dropdown-submenu">
+                                    <a href="#" class="dropdown-item d-flex justify-content-between">Our Services <i
+                                            class="material-icons md-1 mt-1">chevron_right</i></a>
+                                    <div class="dropdown-menu animate">
+                                        <a href="/services/design" class="dropdown-item">Design</a>
+                                        <a href="/services/installation" class="dropdown-item">Installation</a>
+                                        <a href="/services/delivery" class="dropdown-item">Delivery</a>
+                                        <a href="/services/remodeling" class="dropdown-item">Remodeling</a>
+                                        <div class="dropdown-submenu">
+                                            <a href="#" class="dropdown-item d-flex justify-content-between">Submenu <i
+                                                    class="material-icons md-1 mt-1">chevron_right</i></a>
+                                            <div class="dropdown-menu animate">
+                                                <a href="#" class="dropdown-item">Submenu1</a>
+                                                <a href="#" class="dropdown-item">Submenu2</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a class="dropdown-item" href="/contacts">Contacts</a>
+                                <a class="dropdown-item" href="/faq">FAQ</a>
+                            </div>
+                        </div>
+
+
+                        <a class="nav-link" th:href="@{/register}" data-toggle="modal" data-target="#loginModal"
+                           sec:authorize="!isAuthenticated()"><i class="material-icons">person_add</i> Register</a>
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"
+                           sec:authorize="!isAuthenticated()"><i class="material-icons">person_outline</i> Sign In</a>
+
+                        <!--  Show My Account Menu for Authorized Users-->
+                        <block sec:authorize="isAuthenticated()">
+
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle no-caret" data-toggle="dropdown"
+                                   role="button" aria-haspopup="true" aria-expanded="false"><i
+                                        class="material-icons mr-1">account_box</i>My Acount</a>
+                                <div class="dropdown-menu animate">
+                                    <a class="dropdown-item" href="/about_us">About Us</a>
+                                    <div class="dropdown-submenu">
+                                        <a href="#" class="dropdown-item d-flex justify-content-between">Our Services <i
+                                                class="material-icons md-1 mt-1">chevron_right</i></a>
+                                        <div class="dropdown-menu animate">
+                                            <a href="/services/design" class="dropdown-item">Design</a>
+                                            <a href="/services/installation" class="dropdown-item">Installation</a>
+                                            <a href="/services/delivery" class="dropdown-item">Delivery</a>
+                                            <a href="/services/remodeling" class="dropdown-item">Remodeling</a>
+                                            <div class="dropdown-submenu">
+                                                <a href="#" class="dropdown-item d-flex justify-content-between">Submenu
+                                                    <i class="material-icons md-1 mt-1">chevron_right</i></a>
+                                                <div class="dropdown-menu animate">
+                                                    <a href="#" class="dropdown-item">Submenu1</a>
+                                                    <a href="#" class="dropdown-item">Submenu2</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="dropdown-item" href="/contacts">Contacts</a>
+                                    <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                                </div>
+                            </div>
+
+
+                        </block>
+                        <!-- //Show My Account Menu for Authorized Users-->
+
+                        <!-- <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()"><i class="material-icons">exit_to_app</i> Logout</a>-->
+
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

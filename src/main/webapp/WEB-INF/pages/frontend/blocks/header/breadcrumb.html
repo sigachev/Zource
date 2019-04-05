@@ -1,0 +1,22 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<!--Do not display on home page-->
+<div class="breadcrumb-container" th:classappend="${#httpServletRequest.getRequestURI() == '/' ? 'd-none':''}">
+    <div class="container-fluid limited">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" th:each="bc : ${info.breadcrumb}"
+                    th:utext="|<a href='${bc.value}'> ${bc.key} </a>|"
+                    th:classappend="${#httpServletRequest.getRequestURI() == '__${bc.value}__' ? 'active':''}"
+                    th:styleappend="${#httpServletRequest.getRequestURI() == '__${bc.value}__' ? 'font-weight: bold;':''}">
+
+                </li>
+
+
+            </ol>
+        </nav>
+    </div>
+</div>

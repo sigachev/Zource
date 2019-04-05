@@ -1,0 +1,24 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<div class="col-lg-3 col-md-4 mb-3">
+
+    <div class="title"><span>Categories</span></div>
+    <div class="list-group mb-4">
+        <a href="/brands?type=tile"
+           class="list-group-item list-group-item-action pl-2 border-left-0 border-right-0 border-top-0">Tile</a>
+        <a href="/brands?type=cabinets"
+           class="list-group-item list-group-item-action pl-2 border-left-0 border-right-0">Cabinets</a>
+        <a href="brands?type=countertops"
+           class="list-group-item list-group-item-action pl-2 border-left-0 border-right-0">Countertops</a>
+        <a href="brands?type=installation"
+           class="list-group-item list-group-item-action pl-2 border-left-0 border-right-0">Installation</a>
+        <a class="list-group-item list-group-item-action pl-2 border-left-0 border-right-0 border-bottom-0"
+           th:href="@{/brands}"><b>All Brands</b></a>
+    </div>
+    <span th:utext="${redirect_to}"></span>
+
+
+</div>

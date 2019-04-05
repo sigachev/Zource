@@ -1,0 +1,78 @@
+<!-- Header -->
+<th:block th:include="blocks/header/header"></th:block>
+<!-- /Header -->
+
+
+<div class="container-fluid limited mb-5">
+    <div class="row justify-content-center mt-4">
+        <div class="col-xs-12 col-sm-auto">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <div class="text-center">
+                        <div class="d-inline-block border border-secondary rounded-circle text-center m-auto">
+                            <h1 class="px-2"><i class="material-icons align-middle md-3">person</i></h1>
+                        </div>
+                    </div>
+                    <h5 class="card-title text-center">Please Enter Your Information</h5>
+
+
+                    <!-- /login?error=true -->
+                    <th:block
+                            th:if="${#session != null && #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}">
+                        <div class="mx-auto text-center" th:if="${#request.getParameter('error') == 'true'}"
+                             style="color: red; margin: 50px; text-align:left">
+                            Login Failed!!!<br/> Reason :
+                            <span th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}"></span>
+                        </div>
+                    </th:block>
+
+                    <form method="POST" th:action="@{/j_spring_security_check}">
+                        <div class="form-group">
+                            <label for="InputUsername">Username</label>
+                            <input type="text" class="form-control" id="InputUsername" name="userName"
+                                   placeholder="Enter Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="InputPassword">Password</label>
+                            <input type="password" class="form-control" id="InputPassword" name="password"
+                                   placeholder="Password">
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="rememberMe">
+                            <label class="custom-control-label" for="rememberMe">Remember Me</label>
+                        </div>
+                        <button type="submit" class="btn btn-theme btn-sm btn-block my-3">Enter</button>
+                        <span class="error-message" th:utext="${error}"></span>
+                        <div class="form-group mb-0">
+                            <a href="register.html" class="text-secondary" th:href="@{/signup}">
+                                <small><u>Register</u></small>
+                            </a>
+                            <a href="#" class="float-right text-secondary" th:href="@{/forgot_password}">
+                                <small><u>Forgot Password ?</u></small>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mx-auto my-4" style="text-align:left">
+                <h3>User/Password:</h3>
+                <ul>
+                    <li>user/123</li>
+                    <li>admin/123</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+
+
+

@@ -1,0 +1,70 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<html>
+
+<!--Header-->
+<th:block th:include="admin/blocks/header/head"></th:block>
+<!--//Header-->
+
+<body class="fixed-sidebar pace-done">
+
+<th:block th:include="admin/blocks/header/progress_loader"></th:block>
+
+<div id="wrapper">
+
+    <!--Side navigation-->
+    <th:block th:include="admin/blocks/header/side_nav"></th:block>
+    <!--//Side navigation-->
+
+    <div id="page-wrapper" class="gray-bg">
+
+        <!--TOP SEARCH BAR-->
+        <th:block th:include="admin/blocks/header/top_search"></th:block>
+        <!--//TOP SEARCH BAR-->
+
+        <!--TOP SEARCH BAR-->
+        <th:block th:include="admin/blocks/header/breadcrumb"></th:block>
+        <!--//TOP SEARCH BAR-->
+
+        <div class="wrapper wrapper-content animated fadeInRight">
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center m-t-lg">
+
+                        Description: <span th:utext="${description}"></span>
+                        <br/>
+                        <h3>Uploaded Files:</h3>
+
+                        <ul th:each="file : ${uploadedFiles}">
+                            <li th:utext="${file}"></li>
+                        </ul>
+
+                        <h3>Failed:</h3>
+                        <ul th:each="file : ${failedFiles}">
+                            <li style="color:red;" th:utext="${file}"></li>
+                        </ul>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--FOOTER-->
+        <th:block th:include="admin/blocks/footer/footer"></th:block>
+        <!--//FOOTER-->
+
+    </div>
+</div>
+
+<!--FOOTER JAVA SCRIPT FILES-->
+<th:block th:include="admin/blocks/footer/footer_js"></th:block>
+<!--//FOOTER JAVA SCRIPT FILES-->
+
+</body>
+</html>

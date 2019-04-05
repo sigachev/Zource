@@ -1,0 +1,4 @@
+spring:
+  message: Hello Spring Dev
+  server:
+    port: 8080

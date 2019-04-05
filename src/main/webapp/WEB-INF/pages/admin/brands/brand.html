@@ -1,0 +1,229 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<html>
+
+<!--Header-->
+<th:block th:include="admin/blocks/header/head"></th:block>
+<!--//Header-->
+
+<body class="fixed-sidebar pace-done">
+
+<th:block th:include="admin/blocks/header/progress_loader"></th:block>
+
+<div id="wrapper">
+
+    <!--Side navigation-->
+    <th:block th:include="admin/blocks/header/side_nav"></th:block>
+    <!--//Side navigation-->
+
+    <div id="page-wrapper" class="gray-bg">
+
+        <!--TOP SEARCH BAR-->
+        <th:block th:include="admin/blocks/header/top_search"></th:block>
+        <!--//TOP SEARCH BAR-->
+
+        <!--Breadcrumb-->
+        <th:block th:include="admin/blocks/header/breadcrumb"></th:block>
+        <!--//BreadcrumbR-->
+
+
+        <div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+            <div class="row">
+                <div class="col-3">
+                    <!--LOGO-->
+                    <!-- MyUploadForm -->
+
+                    <form th:object="${brandForm}" method="POST"
+                          th:action="@{/uploadBrandLogo}" enctype="multipart/form-data">
+
+                        <div class="row mx-2">
+                            <div class="ibox">
+                                <div class="ibox-title">
+                                    <h5 th:text="${brandForm.name}"></h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link">
+                                            <i class="fa fa-chevron-up"></i>
+                                        </a>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                            <i class="fa fa-wrench"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-user">
+                                            <li><a href="#" class="dropdown-item">Config option 1</a>
+                                            </li>
+                                            <li><a href="#" class="dropdown-item">Config option 2</a>
+                                            </li>
+                                        </ul>
+                                        <a class="close-link">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+                                <div class="ibox-content text-center m-t-sm ">
+
+                                    <div class="m-b-sm">
+                                        <img th:src="@{'/images/brands/' + ${brandForm.id} + '/' + ${brandForm.logoFileName}}"
+                                             alt="image" class="img-fluid border-bottom my-2">
+                                    </div>
+
+                                    <!-- <h3 th:text="${brandForm.name}" class="my-3"></h3>-->
+                                    <!--<p th:text="${brandForm.description}" class="font-bold"></p>-->
+
+
+                                    <div class="custom-file">
+                                        <input th:field="*{logoFile}" id="logo" type="file" class="custom-file-input">
+                                        <label for="logo" class="custom-file-label">Choose file...</label>
+                                    </div>
+
+                                    <script type="text/javascript">
+                                        $('.custom-file-input').on('change', function () {
+                                            let fileName = $(this).val().split('\\').pop();
+                                            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                                        });
+                                    </script>
+
+
+                                    <input th:field="*{id}" style="width:50px;" type="hidden"/>
+
+                                    <button class="btn btn-primary btn-block m-t"><i class="fa fa-arrow-up"></i> Upload
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+
+
+                </div>
+
+
+                <div class="col-lg-9">
+                    <div class="tabs-container">
+                        <div class="tabs-left">
+                            <ul class="nav nav-tabs d-block">
+                                <li><a class="nav-link active" data-toggle="tab" href="#tab-1"> Product info</a></li>
+                                <li><a class="nav-link" data-toggle="tab" href="#tab-2"> Data</a></li>
+                                <li><a class="nav-link" data-toggle="tab" href="#tab-3"> Discount</a></li>
+                                <li><a class="nav-link" data-toggle="tab" href="#tab-4"> Images</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+
+                                        <div th:if="${message!= null}" class="error-message" th:utext="${message}">
+
+                                        </div>
+
+
+                                        <form th:object="${brandForm}" th:action="@{/admin/brand}" method="POST"
+                                              enctype="multipart/form-data">
+
+                                            <input th:field="*{newBrand}" type="hidden"/>
+                                            <input type="hidden" th:field="*{id}"/>
+
+                                            <fieldset>
+
+                                                <!--NAME-->
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">Name:</label>
+
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" th:field="*{name}"
+                                                               placeholder="Product name">
+                                                        <span class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                                              th:errors="*{name}">..</span>
+                                                    </div>
+                                                </div>
+
+                                                <!--TYPE-->
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">Type:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <select type="select" class="form-control" th:field="*{type}">
+                                                            <option th:each="t: ${brandTypes}"
+                                                                    th:value="${t}"
+                                                                    th:text="${#strings.capitalize(t)}"/>
+                                                        </select>
+                                                        <span class="text-danger" th:if="${#fields.hasErrors('type')}"
+                                                              th:errors="*{type}">..</span>
+                                                    </div>
+
+                                                </div>
+
+                                                <!--DESCRIPTION-->
+                                                <div class="form-group row">
+                                                    <label class="col-sm-2 col-form-label">Description:</label>
+
+                                                    <div class="col-sm-10">
+                                                        <textarea rows="8" cols="80" class="form-control"
+                                                                  th:field="*{description}"
+                                                                  placeholder="Description"></textarea>
+                                                        <span class="text-danger"
+                                                              th:if="${#fields.hasErrors('description')}"
+                                                              th:errors="*{description}">..</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="float-right">
+                                                    <button type="reset" class="btn btn-sm  btn-white " value="Reset"/>
+                                                    <button type="submit" class="btn btn-sm  btn-primary"
+                                                            value="Submit"/>
+                                                </div>
+
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+
+                                </div>
+                                <div id="tab-2" class="tab-pane">
+                                    <div class="panel-body">
+                                        <strong>Donec quam felis</strong>
+
+                                        <p>Thousand unknown plants are noticed by me: when I hear the buzz of the little
+                                            world among the stalks, and grow familiar with the countless indescribable
+                                            forms of the insects
+                                            and flies, then I feel the presence of the Almighty, who formed us in his
+                                            own image, and the breath </p>
+
+                                        <p>I am alone, and feel the charm of existence in this spot, which was created
+                                            for the bliss of souls like mine. I am so happy, my dear friend, so absorbed
+                                            in the exquisite
+                                            sense of mere tranquil existence, that I neglect my talents. I should be
+                                            incapable of drawing a single stroke at the present moment; and yet.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!--FOOTER-->
+        <th:block th:include="admin/blocks/footer/footer"></th:block>
+        <!--//FOOTER-->
+
+    </div>
+</div>
+
+<!--FOOTER JAVA SCRIPT FILES-->
+<th:block th:include="admin/blocks/footer/footer_js"></th:block>
+<!--//FOOTER JAVA SCRIPT FILES-->
+
+</body>
+</html>

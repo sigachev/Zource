@@ -1,0 +1,44 @@
+<!-- Header -->
+<th:block th:include="blocks/header/header"></th:block>
+<!-- /Header -->
+
+<div class="container-fluid limited mb-5">
+    <div class="row justify-content-center mt-4">
+        <div class="col-xs-12 col-lg-6 col-md-8">
+            <div class="card padding-y-lg">
+                <div class="card-body pt-2 text-center">
+                    <div class="text-center">
+                        <div class="text-center m-auto">
+                            <h1 class="px-4"><i class="material-icons align-middle md-5 m-3">error_outline</i></h1>
+                        </div>
+                    </div>
+                    <h5 class="card-title"><h3 style="color:#d54d4d">Sorry, you can not access this page!</h3></h5>
+
+                    <div class="full-height-layout margin-top-lg margin-bottom info-element">
+                        <span th:text="${message}"></span>
+
+                    </div>
+                    <div class="full-height-layout margin-top-lg margin-bottom">
+                        <span th:text="${errorMsg}"></span>
+
+                    </div>
+
+                    <div class="full-height-layout margin-top-lg margin-bottom">
+                        <button class="button button-primary" onclick="window.history.back()">Go Back</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+
+
+

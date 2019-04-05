@@ -1,0 +1,46 @@
+<div class="modal fade modal-login" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form method="POST" th:action="@{/j_spring_security_check}">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Enter Your Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputUsername">Username</label>
+                        <input type="text" class="form-control" id="inputUsername" name="userName"
+                               placeholder="Enter Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" name="password"
+                               placeholder="Password">
+                        <div class="text-right">
+                            <a th:href="@{/forgot_password}" class="text-secondary">
+                                <small>Forgot Password ?</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="custom-control custom-checkbox mt-1">
+                        <input type="checkbox" class="custom-control-input" id="checkRemember" name="remember-me">
+                        <label class="custom-control-label" for="checkRemember">Remember me</label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <div class="btn-group" role="group" aria-label="Login Action">
+                        <a href="register.html" class="btn btn-outline-theme" role="button">I want to Sign Up</a>
+                        <button type="submit" class="btn btn-theme">SIGN IN</button>
+                        <span class="error-message" th:utext="${error}"></span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+/*
+ * Copyright (c) 2018.
+ * Author: Mikhail Sigachev
+ */
+
+/*FLEXBOX*/
+.flexbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+}
+
+/*CATEGORIES*/
+
+.category-top-banner {
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.category-top-banner > img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #dcdcdc;
+}
+
+.category-image {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 225px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.category-image img {
+    width: 100%;
+}
+
+.category-grid {
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid #dcdcdc;
+}
+
+.category-grid:hover {
+    border-color: #c1c1c1;
+    border-radius: calc(0.25rem - 1px);
+}
+
+.category-grid .category-grid-title {
+    line-height: 1.2;
+    overflow: hidden;
+    height: 39px;
+    text-align: center;
+
+}
+
+.category-grid .category-grid-title a {
+    -webkit-transition: color .1s;
+    transition: color .1s;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+category-grid .category-image {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0 auto;
+}
+
+.category-grid .category-grid-title a:hover, .category-grid .category-grid--title a:focus {
+    text-decoration: none;
+    color: #c14654;
+}
+
+.category-grid-title {
+    box-sizing: border-box;
+    font-size: 1.25em;
+    text-align: center;
+
+}
+
+/*BRANDS*/
+.brand-image {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 225px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.brand-image img {
+    width: 100%;
+}
+
+.brand-grid {
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid #dcdcdc;
+}
+
+.brand-grid:hover {
+    border-color: #c1c1c1;
+    border-radius: calc(0.25rem - 1px);
+}
+
+.brand-grid .brand-grid-title {
+    line-height: 1.2;
+    overflow: hidden;
+    height: 39px;
+    text-align: center;
+}
+
+.brand-grid .brand-grid-title a {
+    -webkit-transition: color .1s;
+    transition: color .1s;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+brand-grid .brand-image {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.brand-grid .brand-grid-title a:hover, .brand-grid .brand-grid--title a:focus {
+    text-decoration: none;
+    color: #c14654;
+}
+
+.brand-grid-title {
+    box-sizing: border-box;
+    font-size: 1.25em;
+
+}

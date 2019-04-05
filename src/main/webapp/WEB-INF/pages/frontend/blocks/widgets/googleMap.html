@@ -1,0 +1,65 @@
+<div class="my-4 justify-content-md-center">
+    <div class="title">Our Locations</div>
+
+
+    <div id="googleMap" class="container-fluid" style="height: 450px;">
+
+
+    </div>
+
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // The location
+            var pos1 = {lat: 42.3054946, lng: -71.21772479999998};
+            var pos2 = {lat: 42.1180132, lng: -71.23459500000001};
+            var centerPos = {lat: 42.206307, lng: -71.193444};
+            // The map, centered at pos1
+            var map = new google.maps.Map(
+                document.getElementById('googleMap'), {zoom: 10, center: centerPos});
+            // The marker, positioned
+            var marker1 = new google.maps.Marker({
+                position: pos1,
+                map: map,
+                title: "Mass Tile - Home Design Center"
+
+            });
+
+            var marker2 = new google.maps.Marker({
+                position: pos2,
+                map: map,
+                title: "Mass Tile"
+            });
+
+
+            // Info Windows
+            var infowindow1 = new google.maps.InfoWindow({
+                content: "<b>Mass Tile - Home Design Center</b>" +
+                    "</br>Tel: (781) 400-2614" +
+                    ""
+
+            });
+            var infowindow2 = new google.maps.InfoWindow({
+                content: "<b>MASS TILE</b> </br>" +
+                    "Tel: (781) 806-0220"
+            });
+            // Attach it to the marker we've just added
+            google.maps.event.addListener(marker1, 'click', function () {
+                infowindow1.open(map, marker1);
+            });
+            google.maps.event.addListener(marker2, 'click', function () {
+                infowindow2.open(map, marker2);
+            });
+
+        }
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfeTm9R9V13I3SMqqbhamwxOf6dYZJyxg&callback=initMap">
+    </script>
+
+</div>
