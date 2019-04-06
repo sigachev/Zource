@@ -30,11 +30,16 @@
         <!--//Breadcrumb-->
         <!--<h1 th:text="${successMsg}"></h1>-->
 
-        <div th:if="${#strings.isEmpty(successMsg) == false}">
+        <div th:if="${#strings.isEmpty(message) == false}">
+
             <script>
 
                 $(document).ready(function () {
-                    $.notify("[[${successMsg}]]");
+                    $.notify({
+                        message: '[[${message}]]'
+                    },{
+                        type: '[[${messageType}]]'
+                    });
 
                 });
             </script>
@@ -73,9 +78,20 @@
 
                                 <input th:field="*{id}" type="hidden"/>
 
-                                <input th:field="*{imageFileName}" type="file"/>
-                                <br/>
-                                <!--<input type="submit" value="Upload">-->
+
+                                <div class="custom-file">
+                                    <input th:field="*{imageFile}" id="logo" type="file" class="custom-file-input">
+                                    <label for="logo" class="custom-file-label">Choose file...</label>
+                                </div>
+
+                                <script type="text/javascript">
+                                    $('.custom-file-input').on('change', function () {
+                                        let fileName = $(this).val().split('\\').pop();
+                                        $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                                    });
+                                </script>
+
+
                                 <button class="btn btn-primary btn-block m-t"><i class="fa fa-arrow-up"></i> Upload
                                 </button>
                             </div>
@@ -102,7 +118,7 @@
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
 
-                                    <div th:if="${message!= null}" class="error-message" th:utext="${message}">
+                                    <div th:if="${#strings.isEmpty(errorMessage)}" class="error-message" th:utext="${errorMessage}">
 
                                     </div>
 

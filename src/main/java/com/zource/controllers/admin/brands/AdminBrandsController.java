@@ -144,7 +144,7 @@ public class AdminBrandsController {
     }
 
     // POST: Do Upload
-    @RequestMapping(value = "/uploadBrandLogo", method = RequestMethod.POST)
+    @PostMapping("/uploadBrandLogo")
     public String uploadBrandLogoPOST(HttpServletRequest request, //
                                       Model model, //
                                       @ModelAttribute("brandForm") BrandForm brandForm) {
@@ -158,7 +158,7 @@ public class AdminBrandsController {
                                      BrandForm brandForm) {
 
 
-        brandForm = (BrandForm) model.asMap().get("brandForm");
+       /* brandForm = (BrandForm) model.asMap().get("brandForm");*/
 
         System.out.println(env.getProperty("file.upload.rootPath"));
 

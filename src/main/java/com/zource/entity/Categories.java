@@ -37,11 +37,11 @@ public class Categories {
     @Column(name = "Description", length = 255, nullable = false)
     private String description;
 
-    @Column(name = "Image", length = 45, nullable = false)
+    @Column(name = "Image", length = 100, nullable = false)
     private String imageFileName;
 
 
-    @Column(name = "top_banner", length = 45, nullable = false)
+    @Column(name = "top_banner", length = 100, nullable = false)
     private String topBanner;
 
 

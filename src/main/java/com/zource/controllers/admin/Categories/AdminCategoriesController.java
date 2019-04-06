@@ -4,6 +4,7 @@
  */
 package com.zource.controllers.admin.Categories;
 
+import com.zource.controllers.admin.BrandFormValidator;
 import com.zource.dao.CategoryDAO;
 import com.zource.entity.Categories;
 import com.zource.form.CategoryForm;
@@ -15,15 +16,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +38,23 @@ public class AdminCategoriesController {
 
     @Autowired
     Environment env;
+
+    @Autowired
+    private BrandFormValidator brandFormValidator;
+
+    @InitBinder
+    public void myInitBinder(WebDataBinder dataBinder) {
+        Object target = dataBinder.getTarget();
+        if (target == null) {
+            return;
+        }
+        System.out.println("Target=" + target);
+
+        if (target.getClass() == CategoryForm.class) {
+            //dataBinder.addValidators(brandFormValidator);   //add or set
+        }
+    }
+
 
 
     // Categories List
@@ -89,52 +105,56 @@ public class AdminCategoriesController {
     }
 
     // POST: Save category
-    @RequestMapping(value = {"/admin/category"}, method = RequestMethod.POST)
+    @PostMapping("/admin/category")
     public String categorySave(Model model, //
-                               @ModelAttribute("catForm") @Validated CategoryForm catForm,
-                               BindingResult result,
+                               @ModelAttribute("catForm") @Valid CategoryForm catForm,
+                               BindingResult bindingResult,
                                @ModelAttribute("info") Info info,
                                final RedirectAttributes redirectAttributes) {
 
-        if (result.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             System.out.println("##ERRORS");
             return "admin/categories/category";
         }
 
 
         try {
-            System.out.println("##before save ");
             categoryDAO.save(catForm);
-        } catch (Exception e) {
+
+        }
+        catch (Exception e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             String message = ExceptionUtils.getStackTrace(e);
             model.addAttribute("errorMessage", message);
             // Show product form.
-            return "admin/brands/brand";
+            return "admin/categories/category";
         }
 
-        redirectAttributes.addFlashAttribute("successMsg", "Category updated!");
+        redirectAttributes.addFlashAttribute("message", "Category updated!");
+        redirectAttributes.addFlashAttribute("messageType", "success");
 
         return "redirect:/admin/category?id=" + catForm.getId();
     }
 
 
     // POST: Do Upload
-    @RequestMapping(value = "/uploadCategoryImage", method = RequestMethod.POST)
-    public String uploadBrandLogoPOST(HttpServletRequest request, //
+    @PostMapping("/uploadCategoryImage")
+    public String uploadCategoryLogoPOST(HttpServletRequest request, //
                                       Model model, //
-                                      @ModelAttribute("catForm") CategoryForm catForm) {
+                                      @ModelAttribute("catForm") CategoryForm catForm,
+                                         RedirectAttributes redirectAttributes) {
 
-
-        return this.doUploadCategoryImage(request, model, catForm);
+        return this.doUploadCategoryImage(request, model, catForm, redirectAttributes);
 
     }
 
     private String doUploadCategoryImage(HttpServletRequest request, Model model, //
-                                         CategoryForm catForm) {
+                                         CategoryForm catForm, final RedirectAttributes  redirectAttributes) {
 
 
         catForm = (CategoryForm) model.asMap().get("catForm");
+
+        System.out.println("CatForm ID = " + catForm.getId());
 
         System.out.println(env.getProperty("file.upload.rootPath"));
 
@@ -147,6 +167,18 @@ public class AdminCategoriesController {
 
         List<File> uploadedFiles = new ArrayList<File>();
         List<String> failedFiles = new ArrayList<String>();
+
+
+        ///////////////////////
+
+        if (fileData.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+            return "redirect:/admin/category?id=" + catForm.getId();
+        }
+
+
+        ///////////////////////
+
 
 
         // Client File Name
@@ -179,7 +211,7 @@ public class AdminCategoriesController {
 
         model.addAttribute("uploadedFiles", uploadedFiles);
         model.addAttribute("failedFiles", failedFiles);
-        return "admin/brand?id=" + catForm.getId();
+        return "redirect:admin/category?id=" + catForm.getId();
     }
 
 
