@@ -1,1 +1,0 @@
-https://www.mkyong.com/spring-boot/spring-boot-hibernate-search-example/
