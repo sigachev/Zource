@@ -30,19 +30,31 @@
         <!--//Breadcrumb-->
         <!--<h1 th:text="${successMsg}"></h1>-->
 
-        <div th:if="${#strings.isEmpty(message) == false}">
+        <div th:object="${notification}" th:if="${notification != null}">
+            <script>
 
+                $(document).ready(function () {
+                    $.notify({
+                        message: '[[${notification.message}]]'
+                    },{
+                           type: '[[${notification.type}]]'
+                    });
+
+                });
+            </script>
+<!--
             <script>
 
                 $(document).ready(function () {
                     $.notify({
                         message: '[[${message}]]'
                     },{
-                        type: '[[${messageType}]]'
+                        type: 'danger'
                     });
 
                 });
             </script>
+-->
 
         </div>
 

@@ -9,6 +9,8 @@ import com.zource.dao.CategoryDAO;
 import com.zource.entity.Categories;
 import com.zource.form.CategoryForm;
 import com.zource.model.Info;
+import com.zource.model.notifications.Notification;
+import com.zource.model.notifications.SuccessNotification;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,8 +132,7 @@ public class AdminCategoriesController {
             return "admin/categories/category";
         }
 
-        redirectAttributes.addFlashAttribute("message", "Category updated!");
-        redirectAttributes.addFlashAttribute("messageType", "success");
+        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!"));
 
         return "redirect:/admin/category?id=" + catForm.getId();
     }
@@ -170,9 +171,8 @@ public class AdminCategoriesController {
 
 
         ///////////////////////
-
         if (fileData.isEmpty()) {
-            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+            redirectAttributes.addFlashAttribute("notification", new SuccessNotification("Uploaded!"));
             return "redirect:/admin/category?id=" + catForm.getId();
         }
 
