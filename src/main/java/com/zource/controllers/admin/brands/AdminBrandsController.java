@@ -11,7 +11,9 @@ import com.zource.dao.BrandDAO;
 import com.zource.entity.Brands;
 import com.zource.form.BrandForm;
 import com.zource.model.Info;
+import com.zource.model.notifications.Notification;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -128,18 +130,18 @@ public class AdminBrandsController {
             return "admin/brands/brand";
         }
 
-
-/*        try {
-            System.out.println("##before save ");*/
-        brandDAO.save(brandForm);
-      /*  } catch (Exception e) {
+        try {
+            System.out.println("##before save ");
+            brandDAO.save(brandForm);
+        } catch (Exception e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             String message = ExceptionUtils.getStackTrace(e);
             model.addAttribute("errorMessage", message);
             // Show product form.
             return "admin/brands/brand";
-        }*/
+        }
 
+        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
         return "redirect:/admin/brands";
     }
 
@@ -147,18 +149,16 @@ public class AdminBrandsController {
     @PostMapping("/uploadBrandLogo")
     public String uploadBrandLogoPOST(HttpServletRequest request, //
                                       Model model, //
-                                      @ModelAttribute("brandForm") BrandForm brandForm) {
+                                      @ModelAttribute("brandForm") BrandForm brandForm, RedirectAttributes  redirectAttributes) {
 
 
-        return this.doUploadBrandLogo(request, model, brandForm);
+        return this.doUploadBrandLogo(request, model, brandForm, redirectAttributes);
 
     }
 
     private String doUploadBrandLogo(HttpServletRequest request, Model model, //
-                                     BrandForm brandForm) {
+                                     BrandForm brandForm, final RedirectAttributes  redirectAttributes) {
 
-
-       /* brandForm = (BrandForm) model.asMap().get("brandForm");*/
 
         System.out.println(env.getProperty("file.upload.rootPath"));
 
@@ -171,6 +171,13 @@ public class AdminBrandsController {
 
         List<File> uploadedFiles = new ArrayList<File>();
         List<String> failedFiles = new ArrayList<String>();
+
+
+        if (fileData.isEmpty()) {
+            redirectAttributes.addFlashAttribute("notification", new Notification("Please choose file to upload.").warning());
+            return "redirect:/admin/brand?id=" + brandForm.getId();
+        }
+
 
 
         // Client File Name
@@ -203,6 +210,7 @@ public class AdminBrandsController {
 
         model.addAttribute("uploadedFiles", uploadedFiles);
         model.addAttribute("failedFiles", failedFiles);
+        redirectAttributes.addFlashAttribute("message", "File uploaded :" + uploadedFiles);
         return "redirect:admin/brand?id=" + brandForm.getId();
     }
 

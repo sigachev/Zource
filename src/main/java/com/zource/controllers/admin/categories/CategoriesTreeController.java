@@ -3,7 +3,7 @@
  * Author: Mikhail Sigachev
  */
 
-package com.zource.controllers.admin.Categories;
+package com.zource.controllers.admin.categories;
 
 import com.zource.dao.CategoryDAO;
 import com.zource.entity.Categories;

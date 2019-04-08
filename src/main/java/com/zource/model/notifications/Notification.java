@@ -28,20 +28,24 @@ public class Notification {
         this.type = type;
     }
 
-    public void info() {
+    public Notification info() {
         this.type = "info";
+       return this;
     }
 
-    public void success() {
+    public Notification success() {
         this.type = "success";
+        return this;
     }
 
-    public void warning() {
+    public Notification warning() {
         this.type = "warning";
+        return this;
     }
 
-    public void danger() {
+    public Notification danger() {
         this.type = "danger";
+        return this;
     }
 
 }

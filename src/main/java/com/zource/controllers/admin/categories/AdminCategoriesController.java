@@ -2,7 +2,7 @@
  * Copyright (c) 2018.
  * Author: Mikhail Sigachev
  */
-package com.zource.controllers.admin.Categories;
+package com.zource.controllers.admin.categories;
 
 import com.zource.controllers.admin.BrandFormValidator;
 import com.zource.dao.CategoryDAO;
@@ -10,7 +10,6 @@ import com.zource.entity.Categories;
 import com.zource.form.CategoryForm;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
-import com.zource.model.notifications.SuccessNotification;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +131,7 @@ public class AdminCategoriesController {
             return "admin/categories/category";
         }
 
-        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!"));
+        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
 
         return "redirect:/admin/category?id=" + catForm.getId();
     }
@@ -172,7 +171,7 @@ public class AdminCategoriesController {
 
         ///////////////////////
         if (fileData.isEmpty()) {
-            redirectAttributes.addFlashAttribute("notification", new SuccessNotification("Uploaded!"));
+            redirectAttributes.addFlashAttribute("notification", new Notification("Please choose file to upload.").warning());
             return "redirect:/admin/category?id=" + catForm.getId();
         }
 
