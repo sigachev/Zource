@@ -8,6 +8,8 @@ package com.zource.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -19,9 +21,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Categories")
-@Getter
-@Setter
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({ "id", "name" })
 //@JsonIgnoreProperties( value= {"parentCategories"})
 public class Categories {
 
@@ -34,6 +36,7 @@ public class Categories {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("text")
     @Column(name = "Description", length = 255, nullable = false)
     private String description;
 

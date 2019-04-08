@@ -210,7 +210,7 @@ public class AdminBrandsController {
 
         model.addAttribute("uploadedFiles", uploadedFiles);
         model.addAttribute("failedFiles", failedFiles);
-        redirectAttributes.addFlashAttribute("message", "File uploaded :" + uploadedFiles);
+        redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFiles.get(0).getName()).success());
         return "redirect:admin/brand?id=" + brandForm.getId();
     }
 

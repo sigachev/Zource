@@ -1,0 +1,18 @@
+<!--
+  ~ Copyright (c) 2019.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<div th:object="${notification}" th:if="${notification != null}">
+    <script>
+
+        $(document).ready(function () {
+            $.notify({
+                message: '[[${notification.message}]]'
+            },{
+                type: '[[${notification.type}]]'
+            });
+
+        });
+    </script>
+</div>

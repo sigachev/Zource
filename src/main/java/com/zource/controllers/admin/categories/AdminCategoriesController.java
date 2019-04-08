@@ -210,8 +210,11 @@ public class AdminCategoriesController {
 
         model.addAttribute("uploadedFiles", uploadedFiles);
         model.addAttribute("failedFiles", failedFiles);
+        redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFiles.get(0).getName()).success());
         return "redirect:admin/category?id=" + catForm.getId();
     }
+
+
 
 
     @ModelAttribute
@@ -226,5 +229,18 @@ public class AdminCategoriesController {
         model.addAttribute("info", info);
         model.addAttribute("catTypes", brandTypes);
     }
+
+
+    // GET: Category
+    @GetMapping("/admin/rest/categoryTree")
+    @ResponseBody
+    public List<Categories> categoriesTree(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                                           @ModelAttribute("info") Info info) {
+
+        return this.categoryDAO.getAllCategories();
+
+    }
+
+
 
 }

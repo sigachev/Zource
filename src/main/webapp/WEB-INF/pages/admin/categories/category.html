@@ -28,35 +28,10 @@
         <!--Breadcrumb-->
         <th:block th:include="admin/blocks/header/breadcrumb"></th:block>
         <!--//Breadcrumb-->
-        <!--<h1 th:text="${successMsg}"></h1>-->
 
-        <div th:object="${notification}" th:if="${notification != null}">
-            <script>
-
-                $(document).ready(function () {
-                    $.notify({
-                        message: '[[${notification.message}]]'
-                    },{
-                           type: '[[${notification.type}]]'
-                    });
-
-                });
-            </script>
-<!--
-            <script>
-
-                $(document).ready(function () {
-                    $.notify({
-                        message: '[[${message}]]'
-                    },{
-                        type: 'danger'
-                    });
-
-                });
-            </script>
--->
-
-        </div>
+        <!--Notifications-->
+        <th:block th:include="admin/blocks/header/notifications"></th:block>
+        <!--//Notifications-->
 
 
         <div class="wrapper wrapper-content animated fadeInRight ecommerce">
@@ -130,7 +105,8 @@
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
 
-                                    <div th:if="${#strings.isEmpty(errorMessage)}" class="error-message" th:utext="${errorMessage}">
+                                    <div th:if="${#strings.isEmpty(errorMessage)}" class="error-message"
+                                         th:utext="${errorMessage}">
 
                                     </div>
 
@@ -169,6 +145,43 @@
                                                           th:errors="*{description}">..</span>
                                                 </div>
                                             </div>
+
+
+                                           <!-- JSTree-->
+
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <button id="btnSave" class="btn btn-default">Save Checked Nodes
+                                                    </button>
+                                                </div>
+                                                <div class="row">
+                                                    <div id="tree"></div>
+                                                </div>
+                                            </div>
+                                            <script type="text/javascript">
+                                                $(document).ready(function () {
+                                                    var tree = $('#tree').tree({
+                                                        primaryKey: 'id',
+                                                        uiLibrary: 'bootstrap4',
+                                                        dataSource: '/admin/rest/categoryTree',
+                                                        checkboxes: true
+                                                    });
+                                                    $('#btnSave').on('click', function () {
+                                                        var checkedIds = tree.getCheckedNodes();
+                                                        $.ajax({
+                                                            url: '/admin/rest/setParentCategories',
+                                                            data: {checkedIds: checkedIds},
+                                                            method: 'POST'
+                                                        })
+                                                            .fail(function () {
+                                                                alert('Failed to save.');
+                                                            });
+                                                    });
+                                                });
+                                            </script>
+                                            <!-- //JSTree-->
+
+
 
                                             <div class="float-right">
                                                 <input type="submit" value="Submit"/>
