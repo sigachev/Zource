@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  * Author: Mikhail Sigachev
  */
 
-package com.zource.services;
+package com.zource.services.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

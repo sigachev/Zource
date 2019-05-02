@@ -1,7 +1,7 @@
 package com.zource.dao;
 
-import com.zource.entity.Brands;
-import com.zource.form.BrandForm;
+import com.zource.entity.Brand;
+import com.zource.form.admin.brand.BrandForm;
 import com.zource.model.BrandInfo;
 import com.zource.pagination.PaginationResult;
 import org.hibernate.Session;
@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,23 +32,23 @@ public class BrandDAO {
     private SessionFactory sessionFactory;
 
 
-    public List<Brands> getAllBrands() {
+    public List<Brand> getAllBrands() {
 
-        List<Brands> result = loadAllData(Brands.class, sessionFactory.getCurrentSession());
+        List<Brand> result = loadAllData(Brand.class, sessionFactory.getCurrentSession());
 
         return result;
     }
 
 
-    public Brands getBrandById(Integer id) {
-        Brands brand = null;
+    public Brand getBrandById(Integer id) {
+        Brand brand = null;
         EntityManager em = sessionFactory.getCurrentSession().getEntityManagerFactory().createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Brands> cq = cb.createQuery(Brands.class);
-        Root<Brands> Brand = cq.from(Brands.class);
+        CriteriaQuery<Brand> cq = cb.createQuery(Brand.class);
+        Root<Brand> Brand = cq.from(com.zource.entity.Brand.class);
         Predicate brandIDPredicate = cb.equal(Brand.get("id"), id);
         cq.where(brandIDPredicate);
-        TypedQuery<Brands> query = em.createQuery(cq);
+        TypedQuery<com.zource.entity.Brand> query = em.createQuery(cq);
 
         if (query.getResultList().size() > 0)
             brand = query.getSingleResult();
@@ -58,9 +59,9 @@ public class BrandDAO {
     public List findBrands(String name, String type) {
         EntityManager em = sessionFactory.getCurrentSession().getEntityManagerFactory().createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Brands> cq = cb.createQuery(Brands.class);
+        CriteriaQuery<Brand> cq = cb.createQuery(Brand.class);
 
-        Root<Brands> brandRoot = cq.from(Brands.class);
+        Root<Brand> brandRoot = cq.from(Brand.class);
 
         //Constructing list of parameters
         List<Predicate> predicates = new ArrayList<Predicate>();
@@ -69,23 +70,23 @@ public class BrandDAO {
         predicates.add(cb.like(brandRoot.get("type"), "%" + type + "%"));
 
 
-        CriteriaQuery<Brands> query = cq.select(brandRoot).where(predicates.toArray(new Predicate[]{}));
+        CriteriaQuery<Brand> query = cq.select(brandRoot).where(predicates.toArray(new Predicate[]{}));
         return em.createQuery(query).getResultList();
     }
 
     public List getBrandCategories(String id) {
         EntityManager em = sessionFactory.getCurrentSession().getEntityManagerFactory().createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Brands> cq = cb.createQuery(Brands.class);
+        CriteriaQuery<Brand> cq = cb.createQuery(Brand.class);
 
-        Root<Brands> Brand = cq.from(Brands.class);
+        Root<Brand> Brand = cq.from(com.zource.entity.Brand.class);
 
         Predicate brandNamePredicate = cb.equal(Brand.get("id"), id);
         cq.where(brandNamePredicate);
 
-        TypedQuery<Brands> query = em.createQuery(cq);
+        TypedQuery<com.zource.entity.Brand> query = em.createQuery(cq);
 
-        Brands brand = query.getSingleResult();
+        com.zource.entity.Brand brand = query.getSingleResult();
 
         List list = new ArrayList(brand.getBrandCategories());
 
@@ -101,7 +102,7 @@ public class BrandDAO {
 
         System.out.println("##entered save ");
 
-        Brands brand = null;
+        Brand brand = null;
 
         boolean isNew = false;
         if (id != null) {
@@ -109,18 +110,15 @@ public class BrandDAO {
         }
         if (brand == null) {
             isNew = true;
-            brand = new Brands();
+            brand = new Brand();
             // brand.setCreateDate(new Date());
         }
-        brand.setId(id);
 
-        if (brandForm.getName() != null)
+
+        //do not set id, otherwise new row in DB will be created
             brand.setName(brandForm.getName());
-        if (brandForm.getType() != null)
             brand.setType(brandForm.getType());
-        if (brandForm.getDescription() != null)
             brand.setDescription(brandForm.getDescription());
-        if (brandForm.getLogoFileName() != null)
             brand.setLogo(brandForm.getLogoFileName());
 
 
@@ -140,7 +138,7 @@ public class BrandDAO {
                                                    String likeName) {
         String sql = "Select new " + BrandInfo.class.getName() //
                 + "(p.id, p.name) " + " from "//
-                + Brands.class.getName() + " p ";
+                + Brand.class.getName() + " p ";
         if (likeName != null && likeName.length() > 0) {
             sql += " Where lower(p.name) like :likeName ";
         }

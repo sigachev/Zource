@@ -1,6 +1,6 @@
 package com.zource.model;
 
-import com.zource.entity.Brands;
+import com.zource.entity.Brand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ public class BrandInfo {
     public BrandInfo() {
     }
 
-    public BrandInfo(Brands brand) {
+    public BrandInfo(Brand brand) {
         this.id = brand.getId();
         this.type = brand.getType();
         this.description = brand.getDescription();

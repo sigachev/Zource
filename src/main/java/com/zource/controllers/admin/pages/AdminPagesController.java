@@ -48,7 +48,7 @@ public class AdminPagesController {
 */
 
 
-    // Categories List
+    // Category List
     @RequestMapping({"/admin/pages"})
     public String categoriesList(@RequestParam(value = "search", defaultValue = "", required = false) String search,
                                  Model model, @ModelAttribute("info") Info info) {

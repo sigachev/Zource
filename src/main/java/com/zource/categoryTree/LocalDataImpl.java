@@ -6,13 +6,13 @@
 
 package com.zource.categoryTree;
 
-import com.zource.entity.Categories;
+import com.zource.entity.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class LocalDataImpl implements Data<Categories> {
+public class LocalDataImpl implements Data<Category> {
 
     public static final int MAX_ELEMENT = 100;
 
@@ -26,8 +26,8 @@ public class LocalDataImpl implements Data<Categories> {
     }
 
     @Override
-    public List<Categories> getRoot() {
-        List<Categories> nodes = new ArrayList<>(MAX_ELEMENT);
+    public List<Category> getRoot() {
+        List<Category> nodes = new ArrayList<>(MAX_ELEMENT);
         for (int i = 0; i < MAX_ELEMENT; i++) {
             Node node = new Node(Integer.toString(i),"#","Node "+i);       //To indicate a node should be a root node set its parent property to "#".
             nodes.add(node);
@@ -36,7 +36,7 @@ public class LocalDataImpl implements Data<Categories> {
     }
 
     @Override
-    public List<Categories> getById(String parentId) {     //Получем детей нашего дерева Это будет тоже 10 элементов, при этом Если Родитель нечетный то у него не будей
+    public List<Category> getById(String parentId) {     //Получем детей нашего дерева Это будет тоже 10 элементов, при этом Если Родитель нечетный то у него не будей
         List<Node> nodes = new ArrayList<>(MAX_ELEMENT);
         if (Integer.parseInt(parentId)%2==0)
             for (int i = 0; i < MAX_ELEMENT; i++) {

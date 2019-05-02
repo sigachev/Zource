@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  * Author: Mikhail Sigachev
  */
 
-package com.zource.controllers.admin;
+package com.zource.form.admin.brand;
 
 import com.zource.dao.BrandDAO;
-import com.zource.form.BrandForm;
+import com.zource.form.admin.brand.BrandForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

@@ -6,16 +6,16 @@
 package com.zource.controllers.admin.brands;
 
 
-import com.zource.controllers.admin.BrandFormValidator;
 import com.zource.dao.BrandDAO;
-import com.zource.entity.Brands;
-import com.zource.form.BrandForm;
+import com.zource.entity.Brand;
+import com.zource.form.admin.brand.BrandForm;
+import com.zource.form.admin.brand.BrandFormValidator;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
-import org.apache.commons.io.FileUtils;
+import com.zource.services.storage.StorageException;
+import com.zource.services.storage.StorageService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +24,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +38,13 @@ public class AdminBrandsController {
     //Save the uploaded file to this folder
     private static String UPLOADED_FOLDER = "/images/brands/";
 
-    @Autowired
-    private ApplicationContext applicationContext;
 
+    @Autowired
+    private StorageService storageService;
     @Autowired
     private BrandDAO brandDAO;
-
     @Autowired
     Environment env;
-
     @Autowired
     private BrandFormValidator brandFormValidator;
 
@@ -76,7 +69,7 @@ public class AdminBrandsController {
                              Model model) {
 
 
-        List<Brands> brands = brandDAO.getAllBrands();
+        List<Brand> brands = brandDAO.getAllBrands();
 
 
         info.getBreadcrumb().put("Brands", "/admin/brands");
@@ -89,17 +82,19 @@ public class AdminBrandsController {
 
 
     // GET: new brand
-    @RequestMapping(value = {"/admin/brand"}, method = RequestMethod.GET)
+    @GetMapping("/admin/brand")
     public String brand(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
                         @ModelAttribute("info") Info info) {
 
-        BrandForm brandForm = null;
+        BrandForm brandForm = new BrandForm();
 
 
-        if (id instanceof Integer) {
-            Brands brand = brandDAO.getBrandById(id);
+        if (id == (int) id) //check if integer
+        {
+            Brand brand = brandDAO.getBrandById(id);
             if (brand != null) {
-                brandForm = new BrandForm(brand);
+                brandForm.setBrand(brand);
+
             }
         }
         if (brandForm == null) {
@@ -112,107 +107,67 @@ public class AdminBrandsController {
         info.getBreadcrumb().put(brandForm.getName(), "");
         info.getBreadcrumb().inverse();
         model.addAttribute("brandForm", brandForm);
+        model.addAttribute("brandForm", brandForm);
 
         return "admin/brands/brand";
     }
 
 
     // POST: Save brand
-    @RequestMapping(value = {"/admin/brand"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/admin/brand/update"}, method = RequestMethod.POST)
     public String brandSave(Model model, //
                             @ModelAttribute("brandForm") @Validated BrandForm brandForm,
                             BindingResult result,
                             @ModelAttribute("info") Info info,
-                            final RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             System.out.println("##ERRORS");
+
+            brandForm.setBrand( brandDAO.getBrandById(brandForm.getId()));
+
+            System.out.println("Brand form logo = " + brandForm.getLogoFileName());
+            System.out.println("BrandForm id = " + brandForm.getId());
+            System.out.println("Brand logo = " + brandDAO.getBrandById(brandForm.getId()).getLogo());
+
+
+            model.addAttribute("notification", new Notification("ERRORS").danger());
+
             return "admin/brands/brand";
         }
 
         try {
-            System.out.println("##before save ");
             brandDAO.save(brandForm);
         } catch (Exception e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             String message = ExceptionUtils.getStackTrace(e);
-            model.addAttribute("errorMessage", message);
-            // Show product form.
-            return "admin/brands/brand";
-        }
+            redirectAttributes.addFlashAttribute("notification",new Notification(message).danger());
 
-        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
-        return "redirect:/admin/brands";
-    }
-
-    // POST: Do Upload
-    @PostMapping("/uploadBrandLogo")
-    public String uploadBrandLogoPOST(HttpServletRequest request, //
-                                      Model model, //
-                                      @ModelAttribute("brandForm") BrandForm brandForm, RedirectAttributes  redirectAttributes) {
-
-
-        return this.doUploadBrandLogo(request, model, brandForm, redirectAttributes);
-
-    }
-
-    private String doUploadBrandLogo(HttpServletRequest request, Model model, //
-                                     BrandForm brandForm, final RedirectAttributes  redirectAttributes) {
-
-
-        System.out.println(env.getProperty("file.upload.rootPath"));
-
-        String uploadRootPath = Paths.get(env.getProperty("file.upload.rootPath")) + "/images/brands/" + brandForm.getId() + "/";
-        System.out.println("uploadRootPath=" + uploadRootPath);
-
-        File uploadRootDir = new File(uploadRootPath);
-
-        MultipartFile fileData = brandForm.getLogoFile();
-
-        List<File> uploadedFiles = new ArrayList<File>();
-        List<String> failedFiles = new ArrayList<String>();
-
-
-        if (fileData.isEmpty()) {
-            redirectAttributes.addFlashAttribute("notification", new Notification("Please choose file to upload.").warning());
             return "redirect:/admin/brand?id=" + brandForm.getId();
         }
 
-
-
-        // Client File Name
-        String name = fileData.getOriginalFilename();
-        System.out.println("Client File Name = " + name);
-
-        if (name != null && name.length() > 0) {
-            try {
-                FileUtils.cleanDirectory(uploadRootDir);   // delete all files in the directory
-
-                // Create the file at server
-                File serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
-
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-                stream.write(fileData.getBytes());
-                stream.close();
-                //
-
-                brandForm.setLogoFileName(name);
-                uploadedFiles.add(serverFile);
-                System.out.println("Write file: " + serverFile);
-            } catch (Exception e) {
-                System.out.println("Error Write file: " + name);
-                failedFiles.add(name);
-            }
-        }
-
-
-        brandDAO.save(brandForm);
-
-        model.addAttribute("uploadedFiles", uploadedFiles);
-        model.addAttribute("failedFiles", failedFiles);
-        redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFiles.get(0).getName()).success());
-        return "redirect:admin/brand?id=" + brandForm.getId();
+        redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
+        return "redirect:/admin/brand?id=" + brandForm.getId();
     }
+
+    // POST: Upload Logo
+    @PostMapping("/admin/brand/updateLogo")
+    public String uploadBrandLogoPOST(HttpServletRequest request, //
+                                      Model model, //
+                                      @ModelAttribute("brandForm") BrandForm brandForm, RedirectAttributes redirectAttributes) {
+
+      String uploadedFileName = storageService.uploadBrandLogo(brandForm.getLogoFile(), brandForm.getId());
+
+      if (uploadedFileName.length() > 0) {
+          brandForm.setLogoFileName(uploadedFileName);
+          brandDAO.save(brandForm);
+          redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFileName).success());
+      }
+
+        return "redirect:/admin/brand?id=" + brandForm.getId();
+    }
+
+
 
 
     @ModelAttribute
@@ -228,4 +183,12 @@ public class AdminBrandsController {
         model.addAttribute("brandTypes", brandTypes);
     }
 
+
+
+    @ExceptionHandler(StorageException.class)
+    public String handleStorageFileNotFound(StorageException e, final RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("notification", new Notification(e.getMessage()).warning());
+        return "redirect:" + e.getPageURL();
+    }
 }

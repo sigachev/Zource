@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "Brands")
 @Getter
 @Setter
-public class Brands implements Serializable {
+public class Brand implements Serializable {
 
     private static final long serialVersionUID = -1000119078147252957L;
 
@@ -44,10 +44,10 @@ public class Brands implements Serializable {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "brand")
-    private Set<Categories> brandCategories = new HashSet<>();
+    private Set<Category> brandCategories = new HashSet<>();
 
 
-    public Brands() {
+    public Brand() {
     }
 
 

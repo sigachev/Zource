@@ -4,44 +4,41 @@
  */
 package com.zource.controllers.admin.categories;
 
-import com.zource.controllers.admin.BrandFormValidator;
 import com.zource.dao.CategoryDAO;
-import com.zource.entity.Categories;
+import com.zource.entity.Category;
 import com.zource.form.CategoryForm;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
-import org.apache.commons.io.FileUtils;
+import com.zource.services.storage.StorageException;
+import com.zource.services.storage.StorageService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
+@ControllerAdvice
+@Transactional
 public class AdminCategoriesController {
 
     @Autowired
     private CategoryDAO categoryDAO;
-
+    @Autowired
+    private StorageService storageService;
     @Autowired
     Environment env;
-
-    @Autowired
-    private BrandFormValidator brandFormValidator;
 
     @InitBinder
     public void myInitBinder(WebDataBinder dataBinder) {
@@ -57,22 +54,20 @@ public class AdminCategoriesController {
     }
 
 
-
-    // Categories List
-    @RequestMapping({"/admin/categories"})
+    // Category List
+    @GetMapping({"/admin/categories"})
     public String categoriesList(@RequestParam(value = "search", defaultValue = "", required = false) String search,
                                  @ModelAttribute("info") Info info,
                                  Model model) {
 
-        List<Categories> categories = categoryDAO.getAllCategories();
+        List<Category> categories = categoryDAO.getAllCategories();
         model.addAttribute("categories", categories);
 
-        info.getBreadcrumb().put("Categories", "/admin/categories");
+        info.getBreadcrumb().put("Category", "/admin/categories");
         info.getBreadcrumb().inverse();
-        info.setTitle("Categories");
+        info.setTitle("Category");
 
         return "admin/categories/list";
-
     }
 
 
@@ -81,24 +76,21 @@ public class AdminCategoriesController {
     public String brand(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
                         @ModelAttribute("info") Info info) {
 
-        CategoryForm catForm = null;
-
+        CategoryForm catForm = new CategoryForm();
 
         if (id instanceof Integer) {
-            Categories category = categoryDAO.getCategoryByID(id);
-            if (category != null) {
-                catForm = new CategoryForm(category);
-            }
-        }
-        if (catForm == null) {
-            catForm = new CategoryForm();
-            catForm.setNewCategory(true);
+            Category category = categoryDAO.getCategoryByID(id);
+            if (category != null)
+                catForm.setCategory(category);
+            else
+                catForm.setNewCategory(true);
         }
 
         info.setTitle("Category Info");
         info.getBreadcrumb().put("Categories", "/admin/categories");
         info.getBreadcrumb().put(catForm.getName(), "");
         info.getBreadcrumb().inverse();
+
         model.addAttribute("catForm", catForm);
 
 
@@ -106,115 +98,51 @@ public class AdminCategoriesController {
     }
 
     // POST: Save category
-    @PostMapping("/admin/category")
+    @PostMapping("/admin/category/update")
     public String categorySave(Model model, //
                                @ModelAttribute("catForm") @Valid CategoryForm catForm,
                                BindingResult bindingResult,
                                @ModelAttribute("info") Info info,
-                               final RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             System.out.println("##ERRORS");
+            catForm.setCategory(categoryDAO.getCategoryByID(catForm.getId()));
+            model.addAttribute("notification", new Notification(bindingResult.toString()).warning());
             return "admin/categories/category";
         }
 
 
         try {
             categoryDAO.save(catForm);
+        } catch (Exception e) {
 
-        }
-        catch (Exception e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             String message = ExceptionUtils.getStackTrace(e);
-            model.addAttribute("errorMessage", message);
-            // Show product form.
-            return "admin/categories/category";
+            redirectAttributes.addFlashAttribute("notification", new Notification(message).danger());
+            return "redirect:/admin/category?id=" + catForm.getId();
         }
 
         redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
-
         return "redirect:/admin/category?id=" + catForm.getId();
     }
 
 
     // POST: Do Upload
-    @PostMapping("/uploadCategoryImage")
-    public String uploadCategoryLogoPOST(HttpServletRequest request, //
-                                      Model model, //
-                                      @ModelAttribute("catForm") CategoryForm catForm,
-                                         RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/category/updateLogo")
+    public String uploadCategoryLogoPOST(Model model,
+                                         @ModelAttribute("categoryForm") CategoryForm categoryForm, RedirectAttributes redirectAttributes) {
 
-        return this.doUploadCategoryImage(request, model, catForm, redirectAttributes);
+        String uploadedFileName = storageService.updateCategoryLogo(categoryForm.getLogoFile(), categoryDAO.getCategoryByID(categoryForm.getId()));
 
-    }
-
-    private String doUploadCategoryImage(HttpServletRequest request, Model model, //
-                                         CategoryForm catForm, final RedirectAttributes  redirectAttributes) {
-
-
-        catForm = (CategoryForm) model.asMap().get("catForm");
-
-        System.out.println("CatForm ID = " + catForm.getId());
-
-        System.out.println(env.getProperty("file.upload.rootPath"));
-
-        String uploadRootPath = Paths.get(env.getProperty("file.upload.rootPath")) + "/images/categories/" + catForm.getId() + "/";
-        System.out.println("uploadRootPath=" + uploadRootPath);
-
-        File uploadRootDir = new File(uploadRootPath);
-
-        MultipartFile fileData = catForm.getImageFile();
-
-        List<File> uploadedFiles = new ArrayList<File>();
-        List<String> failedFiles = new ArrayList<String>();
-
-
-        ///////////////////////
-        if (fileData.isEmpty()) {
-            redirectAttributes.addFlashAttribute("notification", new Notification("Please choose file to upload.").warning());
-            return "redirect:/admin/category?id=" + catForm.getId();
+        if (uploadedFileName.length() > 0) {
+            categoryForm.setLogoFileName(uploadedFileName);
+            categoryDAO.save(categoryForm);
+            redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFileName).success());
         }
 
-
-        ///////////////////////
-
-
-
-        // Client File Name
-        String name = fileData.getOriginalFilename();
-        System.out.println("Client File Name = " + name);
-
-        if (name != null && name.length() > 0) {
-            try {
-                FileUtils.cleanDirectory(uploadRootDir);   // delete all files in the directory
-
-                // Create the file at server
-                File serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
-
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-                stream.write(fileData.getBytes());
-                stream.close();
-                //
-
-                catForm.setImageFileName(name);
-                uploadedFiles.add(serverFile);
-                System.out.println("Write file: " + serverFile);
-            } catch (Exception e) {
-                System.out.println("Error Write file: " + name);
-                failedFiles.add(name);
-            }
-        }
-
-
-        categoryDAO.save(catForm);
-
-        model.addAttribute("uploadedFiles", uploadedFiles);
-        model.addAttribute("failedFiles", failedFiles);
-        redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFiles.get(0).getName()).success());
-        return "redirect:admin/category?id=" + catForm.getId();
+        return "redirect:/admin/category?id=" + categoryForm.getId();
     }
-
-
 
 
     @ModelAttribute
@@ -231,16 +159,29 @@ public class AdminCategoriesController {
     }
 
 
-    // GET: Category
-    @GetMapping("/admin/rest/categoryTree")
-    @ResponseBody
-    public List<Categories> categoriesTree(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                                           @ModelAttribute("info") Info info) {
+    @ExceptionHandler(StorageException.class)
+    public String handleStorageFileNotFound(StorageException e, final RedirectAttributes redirectAttributes) {
 
-        return this.categoryDAO.getAllCategories();
-
+        redirectAttributes.addFlashAttribute("notification", new Notification(e.getMessage()).warning());
+        return "redirect:" + e.getPageURL();
     }
 
+    /*
+        // GET: Category
+        @GetMapping("/admin/rest/categoryTree")
+        @ResponseBody
+        public List<Category> categoriesTree(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                                               @ModelAttribute("info") Info info) {
 
+            return this.categoryDAO.getAllCategories();
 
+        }
+    */
+    @ModelAttribute("multiCheckboxAllValues")
+    public String[] getMultiCheckboxAllValues() {
+        return new String[]{
+                "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday", "Sunday"
+        };
+    }
 }

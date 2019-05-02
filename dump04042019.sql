@@ -98,7 +98,7 @@ INSERT INTO `Brands` VALUES (1,'MASS TILE','mass_tile_logo.png','tile','zsadfas 
 UNLOCK TABLES;
 
 --
--- Table structure for table `Categories`
+-- Table structure for table `Category`
 --
 
 DROP TABLE IF EXISTS `Categories`;
@@ -116,13 +116,13 @@ CREATE TABLE `Categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Categories`
+-- Dumping data for table `Category`
 --
 
 LOCK TABLES `Categories` WRITE;
-/*!40000 ALTER TABLE `Categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Category` DISABLE KEYS */;
 INSERT INTO `Categories` VALUES (1,'ROOT CATEGORY',NULL,NULL,NULL,NULL),(2,'Tile','','tile.jpg','tile-banner.jpg','3'),(3,'Cabinetry','','kitchen-cabinets.jpg','kitchen-design-banner-top.jpeg',NULL),(4,'Countertops','sdfsd ','12.jpg',NULL,NULL),(5,'Installation Materials',NULL,NULL,NULL,'2'),(6,'Cat 6',NULL,NULL,NULL,'2');
-/*!40000 ALTER TABLE `Categories` ENABLE KEYS */;
+/*!40000 ALTER TABLE `Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -320,7 +320,7 @@ CREATE TABLE `page_menus` (
 
 LOCK TABLES `page_menus` WRITE;
 /*!40000 ALTER TABLE `page_menus` DISABLE KEYS */;
-INSERT INTO `page_menus` VALUES (1,'Main Menu','Categories','<ul class=\"list-group mb-4\">\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0 border-top-0\">» 212 Lorem Ipsum. Dolor Sit, Amet</li>\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0\">» +123-456-789</li>\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0\">» cs@domain.tld</li>\n                </ul>\n                              \n                <div class=\"title\"><span>Our Location</span></div>\n\n\n\n<div class=\"my-4 justify-content-md-center\">\n\n<div id=\"googleMap\" class=\"container-fluid\" style=\"height: 450px;\">\n\n\n\n</div>\n\n<script>\n    // Initialize and add the map\n    function initMap() {\n        // The location\n        var pos1 = {lat: 42.3054946, lng: -71.21772479999998};\n        var pos2 = {lat: 42.1180132, lng: -71.23459500000001};\n        var centerPos = {lat:  42.206307, lng: -71.193444};\n        // The map, centered at pos1\n        var map = new google.maps.Map(\n\n            document.getElementById(\'googleMap\'), {zoom: 10, center: centerPos});\n        // The marker, positioned\n        var marker1 = new google.maps.Marker({\n            position: pos1,\n            map: map,\n            title:\"Mass Tile - Home Design Center\"\n\n        });\n\n        var marker2 = new google.maps.Marker({\n            position: pos2,\n            map: map,\n            title:\"Mass Tile\"\n        });\n\n\n        // Info Windows\n        var infowindow1 = new google.maps.InfoWindow({\n            content: \"<b>Mass Tile - Home Design Center</b>\" +\n            \"</br>Tel: (781) 400-2614\" +\n                \"\"\n\n        });\n        var infowindow2 = new google.maps.InfoWindow({\n            content: \"<b>MASS TILE</b> </br>\" +\n                \"Tel: (781) 806-0220\"\n        });\n        // Attach it to the marker we\'ve just added\n        google.maps.event.addListener(marker1, \'click\', function() {\n            infowindow1.open(map,marker1);\n        });\n        google.maps.event.addListener(marker2, \'click\', function() {\n            infowindow2.open(map,marker2);\n        });\n\n    }\n</script>\n<!--Load the API from the specified URL\n* The async attribute allows the browser to render the page while the API loads\n* The key parameter will contain your own API key (which is not needed for this tutorial)\n* The callback parameter executes the initMap() function\n-->\n<script async defer\n        src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyCfeTm9R9V13I3SMqqbhamwxOf6dYZJyxg&callback=initMap\">\n</script>\n\n</div>'),(2,'Candlelight Menu','Categories',NULL);
+INSERT INTO `page_menus` VALUES (1,'Main Menu','Category','<ul class=\"list-group mb-4\">\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0 border-top-0\">» 212 Lorem Ipsum. Dolor Sit, Amet</li>\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0\">» +123-456-789</li>\n                    <li class=\"list-group-item pl-2 border-left-0 border-right-0\">» cs@domain.tld</li>\n                </ul>\n                              \n                <div class=\"title\"><span>Our Location</span></div>\n\n\n\n<div class=\"my-4 justify-content-md-center\">\n\n<div id=\"googleMap\" class=\"container-fluid\" style=\"height: 450px;\">\n\n\n\n</div>\n\n<script>\n    // Initialize and add the map\n    function initMap() {\n        // The location\n        var pos1 = {lat: 42.3054946, lng: -71.21772479999998};\n        var pos2 = {lat: 42.1180132, lng: -71.23459500000001};\n        var centerPos = {lat:  42.206307, lng: -71.193444};\n        // The map, centered at pos1\n        var map = new google.maps.Map(\n\n            document.getElementById(\'googleMap\'), {zoom: 10, center: centerPos});\n        // The marker, positioned\n        var marker1 = new google.maps.Marker({\n            position: pos1,\n            map: map,\n            title:\"Mass Tile - Home Design Center\"\n\n        });\n\n        var marker2 = new google.maps.Marker({\n            position: pos2,\n            map: map,\n            title:\"Mass Tile\"\n        });\n\n\n        // Info Windows\n        var infowindow1 = new google.maps.InfoWindow({\n            content: \"<b>Mass Tile - Home Design Center</b>\" +\n            \"</br>Tel: (781) 400-2614\" +\n                \"\"\n\n        });\n        var infowindow2 = new google.maps.InfoWindow({\n            content: \"<b>MASS TILE</b> </br>\" +\n                \"Tel: (781) 806-0220\"\n        });\n        // Attach it to the marker we\'ve just added\n        google.maps.event.addListener(marker1, \'click\', function() {\n            infowindow1.open(map,marker1);\n        });\n        google.maps.event.addListener(marker2, \'click\', function() {\n            infowindow2.open(map,marker2);\n        });\n\n    }\n</script>\n<!--Load the API from the specified URL\n* The async attribute allows the browser to render the page while the API loads\n* The key parameter will contain your own API key (which is not needed for this tutorial)\n* The callback parameter executes the initMap() function\n-->\n<script async defer\n        src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyCfeTm9R9V13I3SMqqbhamwxOf6dYZJyxg&callback=initMap\">\n</script>\n\n</div>'),(2,'Candlelight Menu','Category',NULL);
 /*!40000 ALTER TABLE `page_menus` ENABLE KEYS */;
 UNLOCK TABLES;
 

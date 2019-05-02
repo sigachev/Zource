@@ -34,7 +34,7 @@ public class Products implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
-    private Brands brand;
+    private Brand brand;
 
 
     @Temporal(TemporalType.TIMESTAMP)

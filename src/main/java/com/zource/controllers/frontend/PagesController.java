@@ -4,7 +4,7 @@ import com.zource.dao.PageDAO;
 import com.zource.entity.Pages;
 import com.zource.form.EmailForm;
 import com.zource.model.Info;
-import com.zource.services.EmailServiceImpl;
+import com.zource.services.email.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

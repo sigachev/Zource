@@ -6,7 +6,7 @@
 package com.zource.controllers.admin.categories;
 
 import com.zource.dao.CategoryDAO;
-import com.zource.entity.Categories;
+import com.zource.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,7 +23,7 @@ public class CategoriesTreeController {
 
     @RequestMapping(value = "/admin/catTree", produces = "application/json")
     public @ResponseBody
-    List<Categories> getCategoriesJSON() {
+    List<Category> getCategoriesJSON() {
 
 
         return categoryDAO.getAllCategories();

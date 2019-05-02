@@ -1,6 +1,12 @@
 
-package com.zource.services;
+/*
+ * Copyright (c) 2019.
+ * Author: Mikhail Sigachev
+ */
 
+package com.zource.services.email;
+
+import com.zource.services.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;

@@ -2,8 +2,8 @@ package com.zource.controllers.frontend;
 
 import com.zource.dao.BrandDAO;
 import com.zource.dao.URLRedirectDAO;
-import com.zource.entity.Brands;
-import com.zource.entity.Categories;
+import com.zource.entity.Brand;
+import com.zource.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -33,7 +33,7 @@ public class BrandController {
     public String brandsList(@RequestParam(value = "search", defaultValue = "", required = false) String search,
                              @RequestParam(value = "type", defaultValue = "", required = false) String type,
                              Model model) {
-        List<Brands> searchResults = brandDAO.findBrands(search, type);
+        List<Brand> searchResults = brandDAO.findBrands(search, type);
 
 
         model.addAttribute("brands", searchResults);
@@ -48,7 +48,7 @@ public class BrandController {
 
     @RequestMapping({"/brand/{id}"})
     public String displayBrandPage(@PathVariable(value = "id", required = false) String brandId, Model model) {
-        List<Categories> searchResults = brandDAO.getBrandCategories(brandId);
+        List<Category> searchResults = brandDAO.getBrandCategories(brandId);
 
         model.addAttribute("brandCategories", searchResults);
         model.addAttribute("brandDescription", brandDAO.getBrandById(Integer.parseInt(brandId)));

@@ -41,12 +41,12 @@
                     <!-- MyUploadForm -->
 
                     <form th:object="${brandForm}" method="POST"
-                          th:action="@{/uploadBrandLogo}" enctype="multipart/form-data">
+                          th:action="@{/admin/brand/updateLogo}" enctype="multipart/form-data">
 
                         <div class="row mx-2">
                             <div class="ibox">
                                 <div class="ibox-title">
-                                    <h5 th:text="${brandForm.name}"></h5>
+                                    <h5 th:text="${brandForm.name} + '  ( id = ' + ${brandForm.id} + ' )'"></h5>
                                     <div class="ibox-tools">
                                         <a class="collapse-link">
                                             <i class="fa fa-chevron-up"></i>
@@ -67,11 +67,11 @@
 
 
                                 </div>
-                                <div class="ibox-content text-center m-t-sm ">
+                                <div class="ibox-content text-center m-t-sm full-width">
 
                                     <div class="m-b-sm">
                                         <img th:src="@{'/images/brands/' + ${brandForm.id} + '/' + ${brandForm.logoFileName}}"
-                                             alt="image" class="img-fluid border-bottom my-2">
+                                             alt="image" class="img-fluid border-blue-500 my-4">
                                     </div>
 
                                     <!-- <h3 th:text="${brandForm.name}" class="my-3"></h3>-->
@@ -111,7 +111,7 @@
                     <div class="tabs-container">
                         <div class="tabs-left">
                             <ul class="nav nav-tabs d-block">
-                                <li><a class="nav-link active" data-toggle="tab" href="#tab-1"> Product info</a></li>
+                                <li><a class="nav-link active" data-toggle="tab" href="#tab-1"> Brand info</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-2"> Data</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-3"> Discount</a></li>
                                 <li><a class="nav-link" data-toggle="tab" href="#tab-4"> Images</a></li>
@@ -126,7 +126,7 @@
                                         </div>
 
 
-                                        <form th:object="${brandForm}" th:action="@{/admin/brand}" method="POST"
+                                        <form th:object="${brandForm}" th:action="@{/admin/brand/update}" method="POST"
                                               enctype="multipart/form-data">
 
                                             <input th:field="*{newBrand}" type="hidden"/>

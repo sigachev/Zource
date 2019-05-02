@@ -70,7 +70,90 @@
 
 
             <div class="row">
-                <div class="col-lg-12">
+
+                <div class="col-lg-4">
+
+                    <div class="ibox-content">
+
+
+                        <div id="cat_tree"></div>
+
+                        <script type="text/javascript">
+
+                            $(document).ready(function () {
+                                //fill data to tree  with AJAX call
+                                $('#cat_tree').jstree({
+                                    'plugins': ['state', 'contextmenu', 'wholerow'],
+                                    'core': {
+                                        'data': {
+                                            "url": "/admin/rest/getRootCategories",
+                                            "plugins": ["wholerow", "checkbox"],
+                                            "dataType": "json", // needed only if you do not supply JSON headers
+                                        },
+                                        'check_callback': true
+
+                                    },
+                                })
+                            });
+
+
+                            $('#cat_tree')
+                                .on('rename_node.jstree', function (e, data) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: '/admin/rest/category/rename/' + data.node.id,
+                                        data: data.text,
+                                        contentType: "text/plain",
+                                        success: function () {
+                                            alert('Success id = ' + data.node.id + ', text = ' + data.text)
+                                        },
+                                        failure: function () {
+                                            alert('fail id = ' + data.node.id + ', text = ' + data.text);
+                                        }
+                                    })
+                                })
+                                .on('create_node.jstree', function (e, data) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: '/admin/rest/category/add/' + data.id,
+                                        data: data.text,
+                                        contentType: "text/plain",
+                                        success: function () {
+                                            alert('Success id = ' + data.node.id + ', text = ' + data.text)
+                                        },
+                                        failure: function () {
+                                            alert('fail id = ' + data.node.id + ', text = ' + data.text);
+                                        }
+                                    })
+
+
+                                    /*
+
+                                                           $.post('/admin/rest/category/rename/' + data.node.id, data.text)
+                                                               .fail(function () {
+                                                                   data.instance.refresh()
+                                                                   console.log('ERROR ' + data.text);
+                                                                   alert('fail id = ' + data.node.id + ', text = ' + data.text);
+                                                               })
+                                                               .done(function () {
+                                                                   alert('Success');
+                                                               })*/
+                                });
+
+                            function alert1() {
+                                alert('ALERT 1')
+                            }
+
+                        </script>
+
+                        <button onclick="alert1()" class="btn-primary my-2">Alert</button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-8">
                     <div class="ibox">
                         <div class="ibox-content">
 
@@ -101,7 +184,7 @@
                                     </td>
 
 
-                                    <td th:text="${#lists.size(cat.subCategories)}" class="footable-visible">
+                                    <td th:text="${#lists.size(cat.childCategories)}" class="footable-visible">
                                     </td>
                                     <td class="text-right footable-visible footable-last-column">
                                         <div class="btn-group">

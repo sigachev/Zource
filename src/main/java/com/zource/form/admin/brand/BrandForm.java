@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  * Author: Mikhail Sigachev
  */
 
-package com.zource.form;
+package com.zource.form.admin.brand;
 
-import com.zource.entity.Brands;
+import com.zource.entity.Brand;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +18,7 @@ public class BrandForm {
     @NotEmpty
     private String name;
     private String type;
+    @NotEmpty
     private String description;
     // Upload files.
     private MultipartFile logoFile;
@@ -28,7 +29,15 @@ public class BrandForm {
         this.newBrand = true;
     }
 
-    public BrandForm(Brands brand) {
+    public BrandForm(Brand brand) {
+        this.id = brand.getId();
+        this.name = brand.getName();
+        this.type = brand.getType();
+        this.description = brand.getDescription();
+        this.logoFileName = brand.getLogo();
+    }
+
+    public void setBrand(Brand brand) {
         this.id = brand.getId();
         this.name = brand.getName();
         this.type = brand.getType();

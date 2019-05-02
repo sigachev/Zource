@@ -42,32 +42,23 @@
                     <!-- Category logo-->
 
                     <form th:object="${catForm}" method="POST"
-                          th:action="@{/uploadCategoryImage}" enctype="multipart/form-data">
+                          th:action="@{/admin/category/updateLogo}" enctype="multipart/form-data">
 
                         <div class="row mx-2">
-                            <div class="ibox-content text-center">
+                            <div class="ibox-content text-center full-width">
 
 
                                 <div class="m-b-sm">
-                                    <img th:src="@{'/images/categories/' + ${catForm.id} + '/' + ${catForm.imageFileName}}"
-                                         alt="image" class="img-fluid float-right">
+                                    <img th:src="@{'/images/categories/' + ${catForm.id} + '/' + ${catForm.logoFileName}}"
+                                         alt="image" class="img-fluid my-4">
                                 </div>
 
-
-                            </div>
-                        </div>
-
-
-                        <div class="row mx-2 pt-3">
-
-
-                            <div class="ibox-content">
 
                                 <input th:field="*{id}" type="hidden"/>
 
 
                                 <div class="custom-file">
-                                    <input th:field="*{imageFile}" id="logo" type="file" class="custom-file-input">
+                                    <input th:field="*{logoFile}" id="logo" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
 
@@ -87,6 +78,41 @@
                         </div>
 
 
+                        <div class="row mx-2 pt-3">
+                            <div class="ibox-content full-width">
+
+                                <!-- JSTree-->
+                                <script>
+                                    /*     $.jstree.defaults.core.expand_selected_onload = false;
+     */
+
+                                    $(function () {
+                                        $('#jstree')
+                                            .jstree({
+                                                "plugins": ["sort", "json_data", "checkbox", "dnd", "contextmenu"],
+                                                'core': {
+                                                    expand_selected_onload: false,
+                                                    'data': {
+                                                        'url': function (node) {
+                                                            return node.id === '#' ? '/admin/rest/getAllCategories' : '/admin/rest/categoryTree?id=[[${catForm.id}]]';
+                                                            <!-- Первые адрес указывает откуда получить корень , Второй детей-->
+                                                        },
+                                                        'data': function (node) {
+                                                            return {'id': node.id};
+                                                        }
+                                                    },
+                                                }
+                                            });
+                                    });
+
+
+                                </script>
+                                <div id="jstree"></div>  <!-- Контейнер для расположения нашего дерева-->
+                                <!-- //JSTree-->
+                            </div>
+                        </div>
+
+
                     </form>
 
 
@@ -101,7 +127,7 @@
                             <li><a class="nav-link" data-toggle="tab" href="#tab-2"> Data</a></li>
                         </ul>
 
-                        <div class="tab-content">
+                        <div id="treeApp" class="tab-content">
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
 
@@ -111,13 +137,73 @@
                                     </div>
 
 
-                                    <form th:object="${catForm}" th:action="@{/admin/category}" method="POST"
-                                          enctype="multipart/form-data">
+                                    <form th:object="${catForm}" th:action="@{/admin/category/update}" method="POST"
+                                          enctype="multipart/form-data" id="categoryForm">
 
                                         <input th:field="*{newCategory}" type="hidden"/>
                                         <input type="hidden" th:field="*{id}"/>
 
                                         <fieldset>
+
+                                            <!--                      &lt;!&ndash;ParentCategories&ndash;&gt;
+                                                                  <div class="form-group row">
+                                                                      <label class="col-sm-2 col-form-label">Name:</label>
+
+                                                                      <div class="col-sm-10">
+                                                                          <tr>
+                                                                              <td>
+                                                                                  <th:block th:each="parent : ${catForm.parents}">
+                                                                                      <input type="text" name="parentCategories"
+                                                                                             th:value="${parent.id}"/>
+                                                                                      <label th:text="${parent.name}"></label>
+                                                                                  </th:block>
+                                                                              </td>
+                                                                          </tr>
+                                                                          <span class="text-danger" th:if="${#fields.hasErrors('parents')}"
+                                                                                th:errors="*{name}">..</span>
+                                                                      </div>
+                                                                  </div>-->
+
+
+                                            <!--ParentCategories-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Parent Categories:</label>
+
+                                                <div class="col-sm-10">
+                                                    <treeselect v-model="value" name="xyz" :multiple="true"
+                                                                :options="options"
+                                                                :flat="true" :normalizer="normalizer"/>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!--TEST-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">TEST:</label>
+
+                                                <div id="test" class="col-sm-10">
+                                                    <tr>
+                                                        <td>
+
+                                                            <input type="text"
+                                                                   v-bind:value="value"
+                                                                   th:field="${catForm.parentIDs}"/>
+
+                                                            <span class="text-danger"
+                                                                  th:if="${#fields.hasErrors('parentIDs')}"
+                                                                  th:errors="*{parentIDs}">..</span>
+
+                                                            <pre class="result">{{ value }}</pre>
+
+                                                        </td>
+                                                    </tr>
+
+                                                </div>
+                                            </div>
+                                            <!--TEST-->
+
 
                                             <!--NAME-->
                                             <div class="form-group row">
@@ -138,8 +224,7 @@
 
                                                 <div class="col-sm-10">
                                                         <textarea rows="8" cols="80" class="form-control"
-                                                                  th:field="*{description}"
-                                                                  placeholder="Description"></textarea>
+                                                                  th:field="*{description}" th:value="*{description}" placeholder="Description"></textarea>
                                                     <span class="text-danger"
                                                           th:if="${#fields.hasErrors('description')}"
                                                           th:errors="*{description}">..</span>
@@ -147,45 +232,11 @@
                                             </div>
 
 
-                                           <!-- JSTree-->
-
-                                            <div class="container-fluid">
-                                                <div class="row">
-                                                    <button id="btnSave" class="btn btn-default">Save Checked Nodes
-                                                    </button>
-                                                </div>
-                                                <div class="row">
-                                                    <div id="tree"></div>
-                                                </div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $(document).ready(function () {
-                                                    var tree = $('#tree').tree({
-                                                        primaryKey: 'id',
-                                                        uiLibrary: 'bootstrap4',
-                                                        dataSource: '/admin/rest/categoryTree',
-                                                        checkboxes: true
-                                                    });
-                                                    $('#btnSave').on('click', function () {
-                                                        var checkedIds = tree.getCheckedNodes();
-                                                        $.ajax({
-                                                            url: '/admin/rest/setParentCategories',
-                                                            data: {checkedIds: checkedIds},
-                                                            method: 'POST'
-                                                        })
-                                                            .fail(function () {
-                                                                alert('Failed to save.');
-                                                            });
-                                                    });
-                                                });
-                                            </script>
-                                            <!-- //JSTree-->
-
-
-
                                             <div class="float-right">
-                                                <input type="submit" value="Submit"/>
-                                                <input type="reset" value="Reset"/>
+                                                <button type="reset" class="btn btn-sm  btn-white">Reset</button>
+                                                <button type="submit" class="btn btn-sm  btn-primary" value="Submit">
+                                                    Submit
+                                                </button>
                                             </div>
 
                                         </fieldset>
@@ -231,7 +282,7 @@
 <!--FOOTER JAVA SCRIPT FILES-->
 <th:block th:include="admin/blocks/footer/footer_js"></th:block>
 <!--//FOOTER JAVA SCRIPT FILES-->
-
+<script src="/admin/js/category/categoryTree.js"></script>
 
 </body>
 </html>

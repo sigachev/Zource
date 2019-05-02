@@ -6,7 +6,7 @@
 package com.zource.controllers.Email;
 
 import com.zource.form.EmailForm;
-import com.zource.services.EmailServiceImpl;
+import com.zource.services.email.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
