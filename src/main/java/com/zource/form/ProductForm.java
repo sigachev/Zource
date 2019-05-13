@@ -1,8 +1,12 @@
 package com.zource.form;
 
-import com.zource.entity.Products;
+import com.zource.entity.Brand;
+import com.zource.entity.Product;
+import com.zource.entity.category.Category;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Set;
 
 @Data
 public class ProductForm {
@@ -11,7 +15,9 @@ public class ProductForm {
     private String name;
     private String description;
     private double price;
-    private boolean enabled;
+    private boolean enabled = true;
+    private Set<Category> categories;
+    private Brand brand;
 
     private boolean newProduct = false;
 
@@ -22,13 +28,15 @@ public class ProductForm {
         this.newProduct = true;
     }
 
-    public ProductForm(Products product) {
+    public ProductForm(Product product) {
+
         this.id = product.getId();
-        this.SKU = product.getSKU();
         this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
+        this.SKU = product.getSKU();
         this.enabled = product.isEnabled();
+        this.brand = product.getBrand();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
     }
 
 

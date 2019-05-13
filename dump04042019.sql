@@ -242,7 +242,7 @@ INSERT INTO `Pages` VALUES (1,'Contacts','Contacts - Our Stores','contact us, st
 UNLOCK TABLES;
 
 --
--- Table structure for table `Products`
+-- Table structure for table `Product`
 --
 
 DROP TABLE IF EXISTS `Products`;
@@ -264,13 +264,13 @@ CREATE TABLE `Products` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Products`
+-- Dumping data for table `Product`
 --
 
 LOCK TABLES `Products` WRITE;
-/*!40000 ALTER TABLE `Products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Product` DISABLE KEYS */;
 INSERT INTO `Products` VALUES (1,'Core Java','sku001','Descrer ',100,NULL,2,'2018-07-17 20:11:50',1),(3,'Swift for Beginners','sku002',NULL,120,NULL,2,'2018-07-17 20:11:50',1),(4,'Oracle XML Parser','sku003',NULL,120,NULL,3,'2018-07-17 20:11:50',0),(5,'CSharp Tutorial for Beginers','sku004',NULL,110,NULL,2,'2018-07-17 20:11:50',1);
-/*!40000 ALTER TABLE `Products` ENABLE KEYS */;
+/*!40000 ALTER TABLE `Product` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

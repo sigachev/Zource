@@ -21,7 +21,7 @@ public class OrderDetail implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID", nullable = false, //
             foreignKey = @ForeignKey(name = "ORDER_DETAIL_PROD_FK"))
-    private Products product;
+    private Product product;
 
     @Column(name = "Quanity", nullable = false)
     private int quanity;
@@ -48,11 +48,11 @@ public class OrderDetail implements Serializable {
         this.order = order;
     }
 
-    public Products getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Products product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 

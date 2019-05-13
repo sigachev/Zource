@@ -1,15 +1,14 @@
 package com.zource.entity;
 
 
+import com.zource.entity.category.Category;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,12 +37,10 @@ public class Brand implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Products> products = new ArrayList<>();
+    @OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
+    private Set<Product> products = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "brand")
+    @OneToMany(mappedBy = "brand")
     private Set<Category> brandCategories = new HashSet<>();
 
 

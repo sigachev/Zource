@@ -2,31 +2,25 @@ package com.zource.controllers.admin;
 
 import com.zource.dao.OrderDAO;
 import com.zource.dao.ProductDAO;
-import com.zource.entity.Products;
-import com.zource.form.ProductForm;
 import com.zource.model.OrderDetailInfo;
 import com.zource.model.OrderInfo;
 import com.zource.pagination.PaginationResult;
 import com.zource.validator.ProductFormValidator;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @Transactional
+@RequestMapping("/admin/")
 public class AdminController {
 
     @Autowired
@@ -54,9 +48,9 @@ public class AdminController {
 */
 
 
-    @RequestMapping("/admin/home")
+    @RequestMapping({"/", "/home"})
     public String home() {
-        return "admin/pages/home";
+        return "admin/content/pages/home";
     }
 
 
@@ -66,7 +60,7 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = {"/accountInfo"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/account"}, method = RequestMethod.GET)
     public String accountInfo(Model model) {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -75,7 +69,7 @@ public class AdminController {
         System.out.println(userDetails.isEnabled());
 
         model.addAttribute("userDetails", userDetails);
-        return "accountInfo";
+        return "account";
     }
 
     @RequestMapping(value = {"/orderList"}, method = RequestMethod.GET)
@@ -96,48 +90,6 @@ public class AdminController {
         return "orderList";
     }
 
-    // GET: Show product.
-    @RequestMapping(value = {"/admin/product"}, method = RequestMethod.GET)
-    public String product(Model model, @RequestParam(value = "id", defaultValue = "") Integer id) {
-        ProductForm productForm = null;
-
-        if (id % 1 == 0) {
-            Products product = productDAO.getProductById(id);
-            if (product != null) {
-                productForm = new ProductForm(product);
-            }
-        }
-        if (productForm == null) {
-            productForm = new ProductForm();
-            productForm.setNewProduct(true);
-        }
-        model.addAttribute("productForm", productForm);
-        return "product";
-    }
-
-
-    // POST: Save product
-    @RequestMapping(value = {"/admin/product"}, method = RequestMethod.POST)
-    public String productSave(Model model, //
-                              @ModelAttribute("productForm") @Validated ProductForm productForm, //
-                              BindingResult result, //
-                              final RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
-            return "product";
-        }
-        try {
-            productDAO.save(productForm);
-        } catch (Exception e) {
-            Throwable rootCause = ExceptionUtils.getRootCause(e);
-            String message = rootCause.getMessage();
-            model.addAttribute("errorMessage", message);
-            // Show product form.
-            return "product";
-        }
-
-        return "redirect:/productList";
-    }
 
 
     @RequestMapping(value = {"/admin/order"}, method = RequestMethod.GET)

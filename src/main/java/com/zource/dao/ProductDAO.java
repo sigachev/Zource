@@ -1,6 +1,6 @@
 package com.zource.dao;
 
-import com.zource.entity.Products;
+import com.zource.entity.Product;
 import com.zource.form.ProductForm;
 import com.zource.model.ProductInfo;
 import com.zource.pagination.PaginationResult;
@@ -9,9 +9,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.util.Date;
 import java.util.List;
 
@@ -19,54 +20,76 @@ import static com.zource.utils.HibernateUtils.loadAllData;
 
 @Transactional
 @Repository
+@PersistenceContext(type = PersistenceContextType.EXTENDED)
 public class ProductDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    public List<Products> getAllProducts() {
-        return loadAllData(Products.class, sessionFactory.getCurrentSession());
+    public List<Product> getAllProducts() {
+        return loadAllData(Product.class, sessionFactory.getCurrentSession());
     }
 
-    public Products getProductById(Integer id) {
+    public Product getProductById(Integer id) {
+        Product result = sessionFactory.getCurrentSession().get(Product.class, id);
 
-        return sessionFactory.getCurrentSession().getEntityManagerFactory().createEntityManager().getReference(Products.class, id);
+        return result;
 
     }
 
     public ProductInfo findProductInfo(Integer id) {
-        Products product = this.getProductById(id);
+        Product product = this.getProductById(id);
         if (product == null) {
             return null;
         }
         return new ProductInfo(product.getId(), product.getName(), product.getPrice());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    @Transactional
     public void save(ProductForm productForm) {
 
         Session session = this.sessionFactory.getCurrentSession();
         Integer id = productForm.getId();
 
-        Products product = null;
+        Product product = null;
 
         boolean isNew = false;
-        if (id != null) {
+        if (id != null)
             product = this.getProductById(id);
-        }
+
+        System.out.println("PRODUCT name = " + product.getName());
+
+
         if (product == null) {
+
+            System.out.println("PRODUCT NULL");
             isNew = true;
-            product = new Products();
+            product = new Product();
             product.setCreateDate(new Date());
         }
-        product.setId(id);
+
+        System.out.println("AFTER PRODUCT NULL");
         product.setName(productForm.getName());
+        product.setSKU(productForm.getSKU());
+        product.setEnabled(productForm.isEnabled());
+
+        System.out.println("Brand::::  " + productForm.getBrand().getId());
+        product.setBrand(productForm.getBrand());
         product.setPrice(productForm.getPrice());
+        product.setDescription(productForm.getDescription());
+
+        product.setCreateDate(new Date());
+
+        product.setCategories(productForm.getCategories());
 
 
         if (isNew) {
+            System.out.println("PRODUCT PERSIST");
             session.persist(product);
-        } else session.merge(product);
+        } else {
+            System.out.println("PRODUCT MERGED: id " + product.getId());
+            session.merge(product);
+        }
         // If error in DB, Exceptions will be thrown out immediately
         session.flush();
     }
@@ -76,7 +99,7 @@ public class ProductDAO {
                                                        String likeName) {
         String sql = "Select new " + ProductInfo.class.getName() //
                 + "(p.code, p.name, p.price) " + " from "//
-                + Products.class.getName() + " p ";
+                + Product.class.getName() + " p ";
         if (likeName != null && likeName.length() > 0) {
             sql += " Where lower(p.name) like :likeName ";
         }

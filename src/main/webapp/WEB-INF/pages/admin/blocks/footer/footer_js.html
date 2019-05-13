@@ -1,3 +1,8 @@
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+
+<script th:src="@{/admin/js/plugins/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+
 <!-- Mainly scripts -->
 <script th:src="@{/admin/js/popper.min.js}"></script>
 <script th:src="@{/admin/js/bootstrap.min.js}"></script>
@@ -7,10 +12,8 @@
 <!-- Custom and plugin javascript -->
 <script th:src="@{/admin/js/inspinia.js}"></script>
 <script th:src="@{/admin/js/plugins/pace/pace.min.js}"></script>
-<script th:src="@{/admin/js/jstree.min.js}"></script>
+<!--<script th:src="@{/admin/js/jstree.min.js}"></script>-->
 
-<!-- iCheck -->
-<script th:src="@{/admin/js/plugins/iCheck/icheck.min.js}"></script>
 
 <!-- SUMMERNOTE -->
 
@@ -246,4 +249,21 @@
             $('#fixedfooter').prop('checked', 'checked')
         }
     }
+
+
+    //i-checks
+
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    });
+
 </script>
+
+
+<!--Populate Bottom JS List from Info object-->
+<th:block th:each="item : *{info.bottomJsList}">
+    <script th:src="${item}"></script>
+</th:block>

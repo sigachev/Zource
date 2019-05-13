@@ -1109,12 +1109,10 @@
     Markdown.subclassDialect = function (d) {
         function Block() {
         }
-
         Block.prototype = d.block;
 
         function Inline() {
         }
-
         Inline.prototype = d.inline;
 
         return {block: new Block(), inline: new Inline()};
@@ -1372,6 +1370,7 @@
             ? jsonml[1]
             : undefined;
     }
+
 
 
     /**

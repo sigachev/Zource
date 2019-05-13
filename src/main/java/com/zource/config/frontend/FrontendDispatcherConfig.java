@@ -1,6 +1,9 @@
 package com.zource.config.frontend;
 
 
+import com.zource.controllers.admin.brands.BrandFormatter;
+import com.zource.entity.category.CategoryConverter;
+import com.zource.entity.category.CategorySetFormatter;
 import com.zource.interceptors.URLInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -10,25 +13,34 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import java.util.Collections;
 
+//import org.thymeleaf.extras.springsecurity.dialect.SpringSecurityDialect;
+
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.zource.controllers", "com.zource.validator"})
+@ComponentScan(basePackages = {"com.zource.controllers", "com.zource.validator", "com.zource.tests"})
 public class FrontendDispatcherConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    BrandFormatter brandFormatter;
+    @Autowired
+    CategoryConverter categoryConverter;
+    @Autowired
+    CategorySetFormatter categorySetFormatter;
 
 
     @Bean
@@ -61,7 +73,7 @@ public class FrontendDispatcherConfig extends WebMvcConfigurerAdapter {
     @Bean(name = "templateEngineFrontend")
     public SpringTemplateEngine templateEngineFrontend() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.addDialect(new SpringSecurityDialect());
+        //templateEngine.addDialect(new SpringSecurityDialect());
         templateEngine.addTemplateResolver(adminTemplateResolver());
         templateEngine.addTemplateResolver(frontendTemplateResolver());
         templateEngine.setEnableSpringELCompiler(true);
@@ -137,7 +149,8 @@ public class FrontendDispatcherConfig extends WebMvcConfigurerAdapter {
                 "/admin/js/**",
                 "/admin/fonts/**",
                 "/admin/font-awesome/**",
-                "/admin/email-templates/**"
+                "/admin/email-templates/**",
+                "/node_modules/**"
         )
                 .addResourceLocations(
                         "classpath:/images/",
@@ -151,8 +164,16 @@ public class FrontendDispatcherConfig extends WebMvcConfigurerAdapter {
                         "classpath:/admin/static/js/",
                         "classpath:/admin/static/fonts/",
                         "classpath:/admin/static/font-awesome/",
-                        "classpath:/admin/static/email-templates/"
+                        "classpath:/admin/static/email-templates/",
+                        "classpath:/node_modules/"
                 );
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(brandFormatter);
+        registry.addFormatter(categorySetFormatter);
+        registry.addConverter(categoryConverter);
     }
 
 

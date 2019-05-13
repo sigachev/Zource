@@ -78,39 +78,39 @@
                         </div>
 
 
-                        <div class="row mx-2 pt-3">
-                            <div class="ibox-content full-width">
+                        <!--                        <div class="row mx-2 pt-3">
+                                                    <div class="ibox-content full-width">
 
-                                <!-- JSTree-->
-                                <script>
-                                    /*     $.jstree.defaults.core.expand_selected_onload = false;
-     */
+                                                        &lt;!&ndash; JSTree&ndash;&gt;
+                                                        <script>
+                                                            /*     $.jstree.defaults.core.expand_selected_onload = false;
+                             */
 
-                                    $(function () {
-                                        $('#jstree')
-                                            .jstree({
-                                                "plugins": ["sort", "json_data", "checkbox", "dnd", "contextmenu"],
-                                                'core': {
-                                                    expand_selected_onload: false,
-                                                    'data': {
-                                                        'url': function (node) {
-                                                            return node.id === '#' ? '/admin/rest/getAllCategories' : '/admin/rest/categoryTree?id=[[${catForm.id}]]';
-                                                            <!-- Первые адрес указывает откуда получить корень , Второй детей-->
-                                                        },
-                                                        'data': function (node) {
-                                                            return {'id': node.id};
-                                                        }
-                                                    },
-                                                }
-                                            });
-                                    });
+                                                            $(function () {
+                                                                $('#jstree')
+                                                                    .jstree({
+                                                                        "plugins": ["sort", "json_data", "checkbox", "dnd", "contextmenu"],
+                                                                        'core': {
+                                                                            expand_selected_onload: false,
+                                                                            'data': {
+                                                                                'url': function (node) {
+                                                                                    return node.id === '#' ? '/admin/rest/getAllCategories' : '/admin/rest/categoryTree?id=[[${catForm.id}]]';
+                                                                                    &lt;!&ndash; Первые адрес указывает откуда получить корень , Второй детей&ndash;&gt;
+                                                                                },
+                                                                                'data': function (node) {
+                                                                                    return {'id': node.id};
+                                                                                }
+                                                                            },
+                                                                        }
+                                                                    });
+                                                            });
 
 
-                                </script>
-                                <div id="jstree"></div>  <!-- Контейнер для расположения нашего дерева-->
-                                <!-- //JSTree-->
-                            </div>
-                        </div>
+                                                        </script>
+                                                        <div id="jstree"></div>  &lt;!&ndash; Контейнер для расположения нашего дерева&ndash;&gt;
+                                                        &lt;!&ndash; //JSTree&ndash;&gt;
+                                                    </div>
+                                                </div>-->
 
 
                     </form>
@@ -145,24 +145,6 @@
 
                                         <fieldset>
 
-                                            <!--                      &lt;!&ndash;ParentCategories&ndash;&gt;
-                                                                  <div class="form-group row">
-                                                                      <label class="col-sm-2 col-form-label">Name:</label>
-
-                                                                      <div class="col-sm-10">
-                                                                          <tr>
-                                                                              <td>
-                                                                                  <th:block th:each="parent : ${catForm.parents}">
-                                                                                      <input type="text" name="parentCategories"
-                                                                                             th:value="${parent.id}"/>
-                                                                                      <label th:text="${parent.name}"></label>
-                                                                                  </th:block>
-                                                                              </td>
-                                                                          </tr>
-                                                                          <span class="text-danger" th:if="${#fields.hasErrors('parents')}"
-                                                                                th:errors="*{name}">..</span>
-                                                                      </div>
-                                                                  </div>-->
 
 
                                             <!--ParentCategories-->
@@ -170,39 +152,31 @@
                                                 <label class="col-sm-2 col-form-label">Parent Categories:</label>
 
                                                 <div class="col-sm-10">
-                                                    <treeselect v-model="value" name="xyz" :multiple="true"
+                                                    <treeselect v-model="parentCategoriesValue" name="xyz"
+                                                                :multiple="true"
                                                                 :options="options"
                                                                 :flat="true" :normalizer="normalizer"/>
-
+                                                    <!--      <span class="text-danger"
+                                                                th:if="${#fields.hasErrors('parentCategories')}"
+                                                                th:errors="*{parentCategories}">..</span>-->
                                                 </div>
 
                                             </div>
 
-
-                                            <!--TEST-->
-                                            <div class="form-group row">
+                                            <!-- Hidden - Parent Categories IDs - Hidden-->
+                                            <div class="form-group row d-none">
                                                 <label class="col-sm-2 col-form-label">TEST:</label>
-
                                                 <div id="test" class="col-sm-10">
                                                     <tr>
                                                         <td>
-
-                                                            <input type="text"
-                                                                   v-bind:value="value"
-                                                                   th:field="${catForm.parentIDs}"/>
-
-                                                            <span class="text-danger"
-                                                                  th:if="${#fields.hasErrors('parentIDs')}"
-                                                                  th:errors="*{parentIDs}">..</span>
-
-                                                            <pre class="result">{{ value }}</pre>
-
+                                                            <input type="text" v-bind:value="parentCategoriesValue"
+                                                                   th:field="*{parentCategories}"/>
                                                         </td>
                                                     </tr>
 
                                                 </div>
                                             </div>
-                                            <!--TEST-->
+                                            <!-- Hidden - Parent Categories IDs - Hidden--->
 
 
                                             <!--NAME-->
@@ -223,8 +197,9 @@
                                                 <label class="col-sm-2 col-form-label">Description:</label>
 
                                                 <div class="col-sm-10">
-                                                        <textarea rows="8" cols="80" class="form-control"
-                                                                  th:field="*{description}" th:value="*{description}" placeholder="Description"></textarea>
+                                                        <textarea class="form-control"
+                                                                  th:field="*{description}"
+                                                                  placeholder="Description"></textarea>
                                                     <span class="text-danger"
                                                           th:if="${#fields.hasErrors('description')}"
                                                           th:errors="*{description}">..</span>
@@ -279,10 +254,11 @@
     </div>
 </div>
 
+
+</body>
 <!--FOOTER JAVA SCRIPT FILES-->
 <th:block th:include="admin/blocks/footer/footer_js"></th:block>
 <!--//FOOTER JAVA SCRIPT FILES-->
-<script src="/admin/js/category/categoryTree.js"></script>
 
-</body>
+
 </html>

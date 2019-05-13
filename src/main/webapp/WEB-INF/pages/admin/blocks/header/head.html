@@ -10,38 +10,33 @@
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/plugins/summernote/summernote-bs4.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/plugins/datapicker/datepicker3.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/animate.css}"/>
-
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/plugins/iCheck/custom.css}"/>
     <link rel="stylesheet" type="text/css"
           th:href="@{/admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css}"/>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/css/plugins/jsTree/style.css}"/>
-
 
     <!-- FooTable -->
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/plugins/footable/footable.core.css}"/>
-
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/style_admin.css}"/>
 
-    <!--JavaScript-->
 
+    <!--  JQuery  -->
     <script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
-
-    <script th:src="@{/admin/js/plugins/bootstrap-notify/bootstrap-notify.min.js}"></script>
-
-
-
-<!--    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />-->
-
-
     <!-- include Vue 2.x -->
     <script th:src="@{https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js}"></script>
-    <!-- include vue-treeselect & its styles. you can change the version tag to better suit your need. -->
-    <script th:src="@{https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.0.38/dist/vue-treeselect.min.js}"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.0.38/dist/vue-treeselect.min.css">
+
+    <!-- iCheck -->
+    <script th:src="@{/admin/js/plugins/iCheck/icheck.js}"></script>
 
 
+    <!--CSS List from Info object-->
+    <th:block th:each="i : ${info.cssList}">
+        <link rel="stylesheet" type="text/css" th:href="@{${i}}"/>
+    </th:block>
+
+    <!--Top JS List from Info object-->
+    <th:block th:each="i : ${info.topJsList}">
+        <script type="text/javascript" th:src="@{${i}}"></script>
+    </th:block>
 
 </head>

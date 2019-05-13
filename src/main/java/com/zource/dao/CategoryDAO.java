@@ -5,7 +5,7 @@
 
 package com.zource.dao;
 
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import com.zource.form.CategoryForm;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,12 +14,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +33,19 @@ public class CategoryDAO {
         return loadAllData(Category.class, sessionFactory.getCurrentSession());
     }
 
+
+    public List<Category> getRootCategories() {
+        List<Category> result = new ArrayList();
+        List<Category> allCategories = this.getAllCategories();
+
+        for (Category cat : allCategories)
+            if (cat.getParentCategories().isEmpty())
+                result.add(cat);
+
+        return result;
+    }
+
+
     public Category getCategoryByID(Integer id) {
 
         if (id == null)
@@ -49,25 +56,14 @@ public class CategoryDAO {
     }
 
 
-    public List getChildCategories(Integer categoryId) {
+    public Set getChildCategories(Integer categoryId) {
 
         Category cat = this.getCategoryByID(categoryId);
-        List list = new ArrayList(cat.getChildCategories());
-
-        return list;
-    }
+        Set list = new HashSet();
+        if (cat.getChildCategories().toArray() == null) return list;
 
 
-    public List<Category> getRootCategories() {
-
-        List<Category> result = new ArrayList();
-        List<Category> allCategories = this.getAllCategories();
-
-        for (Category cat : allCategories)
-            if (cat.getParentCategories().size() == 0)
-                result.add(cat);
-
-        return result;
+        return cat.getChildCategories();
     }
 
 
@@ -84,11 +80,14 @@ public class CategoryDAO {
 
         System.out.println("CATEGORY FORM name = " + category.getName());
 
-        if (category == null)
+        if (category == null) {
             isNew = true;
+            category = new Category();
+        }
 
 
-        category.setParentCategories(this.getCategoriesByIDs(catForm.getParentIDs()));
+
+        /*   category.setParentCategories(this.getCategoriesByIDs(catForm.getParentIDs()));*/
         category.update(catForm);
 
 

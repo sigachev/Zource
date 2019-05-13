@@ -24,14 +24,12 @@ html {
     width: 100%;
     margin-bottom: 10px;
 }
-
 .justifiedGallery .jg-image {
     position: absolute;
     display: inline-block;
     vertical-align: top;
     margin-left: 0px;
 }
-
 .justifiedGallery .jg-image img {
     border: none;
     margin: 0;
@@ -42,7 +40,6 @@ html {
 .justifiedGallery .jg-image a {
     text-decoration: none;
 }
-
 .justifiedGallery .jg-image-label {
     white-space: normal;
     font: normal 12px arial;
@@ -72,7 +69,6 @@ html {
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
-
 .justifiedGallery .jg-row {
     position: relative;
     white-space: nowrap;
@@ -84,6 +80,6 @@ html {
     font-size: 12px;
     border: 1px solid red;
     background-color: #faa;
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0px 10px 0px; 
     padding: 5px 0px 5px 5px;
 }

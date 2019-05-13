@@ -1,6 +1,6 @@
 package com.zource.model;
 
-import com.zource.entity.Products;
+import com.zource.entity.Product;
 import lombok.Data;
 
 @Data
@@ -12,7 +12,7 @@ public class ProductInfo {
     public ProductInfo() {
     }
 
-    public ProductInfo(Products product) {
+    public ProductInfo(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();

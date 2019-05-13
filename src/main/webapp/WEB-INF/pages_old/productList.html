@@ -22,7 +22,7 @@
         <li>
             <a th:href="@{|/buyProduct?code=${prodInfo.code}|}">Buy Now</a>
         </li>
-        <!-- For Manager edit Products -->
+        <!-- For Manager edit Product -->
         <th:block sec:authorize="hasAuthority('ROLE_MANAGER')">
             <li>
                 <a style="color:red;"

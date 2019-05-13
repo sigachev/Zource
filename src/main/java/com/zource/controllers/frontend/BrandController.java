@@ -3,7 +3,7 @@ package com.zource.controllers.frontend;
 import com.zource.dao.BrandDAO;
 import com.zource.dao.URLRedirectDAO;
 import com.zource.entity.Brand;
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;

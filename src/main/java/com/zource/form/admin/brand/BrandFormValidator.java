@@ -6,7 +6,6 @@
 package com.zource.form.admin.brand;
 
 import com.zource.dao.BrandDAO;
-import com.zource.form.admin.brand.BrandForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -43,7 +42,7 @@ public class BrandFormValidator implements Validator {
             if (code.matches("\\s+")) {
                 errors.rejectValue("code", "Pattern.productForm.code");
             } else if (productForm.isNewProduct()) {
-                Products product = productDAO.findProduct(code);
+                Product product = productDAO.findProduct(code);
                 if (product != null) {
                     errors.rejectValue("code", "Duplicate.productForm.code");
                 }

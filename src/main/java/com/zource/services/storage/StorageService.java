@@ -5,9 +5,8 @@
 
 package com.zource.services.storage;
 
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import org.apache.commons.io.FileUtils;
-import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 @Service
 public class StorageService {
@@ -36,10 +34,12 @@ public class StorageService {
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file", "/admin/brand?id="+id);
         }
+/*
 
         Tika tika = new Tika();
         String detectedType = tika.detect(file.getOriginalFilename());
         System.out.println(detectedType);
+*/
 
 
         // Client File Name
@@ -85,9 +85,9 @@ public class StorageService {
             throw new StorageException("Please select file to upload", "/admin/category?id="+category.getId());
         }
 
-        Tika tika = new Tika();
+    /*    Tika tika = new Tika();
         String detectedType = tika.detect(file.getOriginalFilename());
-        System.out.println(detectedType);
+        System.out.println(detectedType);*/
 
         return uploadFile(file, uploadRootDir);
     }

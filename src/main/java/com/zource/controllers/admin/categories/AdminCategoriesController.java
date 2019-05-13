@@ -5,7 +5,7 @@
 package com.zource.controllers.admin.categories;
 
 import com.zource.dao.CategoryDAO;
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import com.zource.form.CategoryForm;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
@@ -24,9 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @ControllerAdvice
@@ -149,6 +147,15 @@ public class AdminCategoriesController {
     public void populateInfo(Model model) {
         Info info = new Info("admin");
 
+        /* CSS LIST*/
+        info.getCssList().add("https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.0.38/dist/vue-treeselect.min.css");
+
+        /*TOP JS LIST*/
+        info.getTopJsList().add("https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@0.0.38/dist/vue-treeselect.min.js");
+
+        /*BOTTOM JS LIST*/
+        info.getBottomJsList().add("/admin/js/category/categoryTree.js");
+
         List<String> brandTypes = new ArrayList<>();
         brandTypes.add("tile");
         brandTypes.add("installation");
@@ -161,27 +168,8 @@ public class AdminCategoriesController {
 
     @ExceptionHandler(StorageException.class)
     public String handleStorageFileNotFound(StorageException e, final RedirectAttributes redirectAttributes) {
-
         redirectAttributes.addFlashAttribute("notification", new Notification(e.getMessage()).warning());
         return "redirect:" + e.getPageURL();
     }
 
-    /*
-        // GET: Category
-        @GetMapping("/admin/rest/categoryTree")
-        @ResponseBody
-        public List<Category> categoriesTree(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
-                                               @ModelAttribute("info") Info info) {
-
-            return this.categoryDAO.getAllCategories();
-
-        }
-    */
-    @ModelAttribute("multiCheckboxAllValues")
-    public String[] getMultiCheckboxAllValues() {
-        return new String[]{
-                "Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday", "Sunday"
-        };
-    }
 }

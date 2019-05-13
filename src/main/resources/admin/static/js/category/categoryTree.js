@@ -15,17 +15,17 @@ console.log("id = " + catID);
 new Vue({
     el: '#treeApp',
     data: {
-        varX: [1, 2, 3],
+        /*varX: [1, 2, 3],*/
 
         // define default value
-        value: null,
+        parentCategoriesValue: null,
         // define options
         options: null,
         normalizer(node) {
             return {
                 id: node.id,
-                label: node.text,
-                children: node.parents,
+                label: node.id + ' :: ' + node.name,
+                children: node.children,
             }
         },
     },
@@ -38,12 +38,12 @@ new Vue({
     methods: {
         loadData: function () {
             var _this = this;
-            $.getJSON('/admin/rest/getParentCategoriesOptions/' + catID, function (json) {
+            $.getJSON('/admin/rest/categories/getParentCategoriesOptions/' + catID, function (json) {
                 _this.options = json;
             })
 
-            $.getJSON('/admin/rest/getParentCategoriesIDs?catID=' + catID, function (json) {
-                this.value = json;
+            $.getJSON('/admin/rest/categories/getParentCategories?catID=' + catID, function (json) {
+                _this.parentCategoriesValue = json;
             })
 
         }

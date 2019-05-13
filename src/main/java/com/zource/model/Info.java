@@ -8,7 +8,7 @@ package com.zource.model;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.zource.entity.Pages;
-import com.zource.entity.Products;
+import com.zource.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,10 @@ public class Info {
         }
     }
 
+/*    public void addJsBottom(String URL) {
+        this.bottomJsList.add(URL);
+    }*/
+
     public void setInfo(Pages page) {
 
         this.title = page.getTitle();
@@ -62,7 +66,7 @@ public class Info {
     }
 
 
-    public void setInfo(Products prod) {
+    public void setInfo(Product prod) {
 
         /*this.title = prod.getTitle();
         this.metaTitle = page.getMetaTitle();

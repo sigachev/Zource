@@ -260,5 +260,5 @@ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain Vie
         }
 
     }
-
+ 
 })(jQuery);

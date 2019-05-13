@@ -6,16 +6,13 @@
 package com.zource.form;
 
 import com.zource.dao.CategoryDAO;
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -33,10 +30,10 @@ public class CategoryForm {
     private MultipartFile logoFile;
     private String logoFileName;
     private boolean newCategory = false;
-/*    private Set<Category> childrenCategories;
-    private Set<Category> parentCategories;*/
+    private Set<Category> childrenCategories;
+    private Set<Category> parentCategories;
 
-    private Set<Integer> parentIDs;
+    /*  private Set<Integer> parentIDs;*/
 
     private String[] multiCheckboxSelectedValues;
 
@@ -49,8 +46,8 @@ public class CategoryForm {
         this.name = cat.getName();
         this.description = cat.getDescription();
         this.logoFileName = cat.getLogoFileName();
-/*        this.parentCategories = cat.getParentCategories();
-        this.childrenCategories = cat.getChildCategories();*/
+        this.parentCategories = cat.getParentCategories();
+        this.childrenCategories = cat.getChildCategories();
 
     }
 
@@ -60,16 +57,17 @@ public class CategoryForm {
         this.name = cat.getName();
         this.description = cat.getDescription();
         this.logoFileName = cat.getLogoFileName();
-/*        this.parentCategories = cat.getParentCategories();
-        this.childrenCategories = cat.getChildCategories();*/
+        this.parentCategories = cat.getParentCategories();
+        this.childrenCategories = cat.getChildCategories();
 
     }
 
+/*
     public void setParentIDs(Set<Integer> parentIDs) {
         this.parentIDs = parentIDs;
 
     }
-
+*/
 
 
 }

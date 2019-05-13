@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2018.
+  ~ Author: Mikhail Sigachev
+  -->
+
+<!-- Header -->
+<th:block th:include="blocks/header/header"></th:block>
+<!-- /Header -->
+
+
+
+<div class="container-fluid limited mt-5">
+
+
+    <!--MAIN CONTENT-->
+    <div class="row">
+
+        <!-- Filter Widget -->
+        <th:block th:include="categories/blocks/sidebar"></th:block>
+        <!-- /Filter Widget -->
+
+        <div class="col-lg-9 col-md-8">
+            <div class="title"><span th:utext="${category.name}">Description</span></div>
+
+
+            <!-- Filter Top -->
+            <!--    <th:block th:include="brands/blocks/filter/top_filter"></th:block>-->
+            <!-- /Filter Top -->
+
+            <!--Grid Layout-->
+            <th:block th:include="categories/blocks/grid_layout"></th:block>
+            <!--/Grid Layout-->
+
+        </div>
+    </div>
+    <!--/MAIN CONTENT-->
+</div>
+
+
+<!-- Footer -->
+<th:block th:include="blocks/footer/footer"></th:block>
+<!-- /Footer -->
+
+
+
+
+

@@ -6,8 +6,7 @@
 package com.zource.controllers.frontend;
 
 import com.zource.dao.CategoryDAO;
-import com.zource.entity.Brand;
-import com.zource.entity.Category;
+import com.zource.entity.category.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @Order(12)
@@ -35,7 +35,7 @@ public class CategoryController {
         List<Category> searchResults = categoryDAO.getAllCategories();
 
         model.addAttribute("categories", searchResults);
-        return "category/all_categories";
+        return "categories/all_categories";
 
     }
 
@@ -45,11 +45,11 @@ public class CategoryController {
 
         model.addAttribute("category", categoryDAO.getCategoryByID(categoryId));
 
-        List<Category> subCats = categoryDAO.getChildCategories(categoryId);
+        Set<Category> subCats = categoryDAO.getChildCategories(categoryId);
         model.addAttribute("subCategories", subCats);
 
 
-        return "category/category";
+        return "categories/category";
 
     }
 
