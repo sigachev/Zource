@@ -1,6 +1,6 @@
 package com.zource.model;
 
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import lombok.Data;
 
 @Data

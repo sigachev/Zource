@@ -9,11 +9,13 @@ import com.zource.dao.CategoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
 
 @Component
+@Transactional
 public class CategorySetFormatter implements Formatter<Set<Category>> {
 
     @Autowired
@@ -23,14 +25,18 @@ public class CategorySetFormatter implements Formatter<Set<Category>> {
     public Set<Category> parse(String text, Locale locale) throws ParseException {
 
         Set<Category> result = new HashSet();
+
         //remove spaces and get separate values
         String[] arr = text.replace(" ", "").split(",");
         Integer id;
 
         for (String st : arr) {
             id = Integer.parseInt(st);
-            result.add(categoryDAO.getCategoryByID(id));
+            result.add(categoryDAO.getById(id));
+            System.out.println("Cat id::: " + categoryDAO.getById(id).getId());
         }
+
+
         return result;
     }
 
@@ -43,8 +49,10 @@ public class CategorySetFormatter implements Formatter<Set<Category>> {
             return "";
         else
             for (Category c : object)
-                arr.add(c.getId());
+                arr.add(c.getId().toString());
 
-        return String.join(",", arr);
+        String result = String.join(",", arr);
+
+        return result;
     }
 }

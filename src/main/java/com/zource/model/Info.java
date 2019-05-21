@@ -8,7 +8,7 @@ package com.zource.model;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.zource.entity.Pages;
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

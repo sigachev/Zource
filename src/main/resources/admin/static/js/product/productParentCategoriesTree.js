@@ -37,7 +37,7 @@ new Vue({
                 _this.options = json;
             })
 
-            $.getJSON('/admin/rest/products/getProductCategories?id=' + productID, function (json) {
+            $.getJSON('/admin/rest/products/getProductCategoriesIDs?id=' + productID, function (json) {
                 _this.value = json;
             })
 

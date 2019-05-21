@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @Order(11)
@@ -48,7 +49,7 @@ public class BrandController {
 
     @RequestMapping({"/brand/{id}"})
     public String displayBrandPage(@PathVariable(value = "id", required = false) String brandId, Model model) {
-        List<Category> searchResults = brandDAO.getBrandCategories(brandId);
+        Set<Category> searchResults = brandDAO.getBrandById(Integer.parseInt(brandId)).getBrandCategories();
 
         model.addAttribute("brandCategories", searchResults);
         model.addAttribute("brandDescription", brandDAO.getBrandById(Integer.parseInt(brandId)));

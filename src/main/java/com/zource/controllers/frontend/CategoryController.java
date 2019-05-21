@@ -43,11 +43,12 @@ public class CategoryController {
     @RequestMapping("/category/{catId}")
     public String displayBrandPage(@PathVariable(value = "catId") Integer categoryId, Model model) {
 
-        model.addAttribute("category", categoryDAO.getCategoryByID(categoryId));
+        Category category = categoryDAO.getById(categoryId);
 
-        Set<Category> subCats = categoryDAO.getChildCategories(categoryId);
+        model.addAttribute("category", category);
+
+        Set<Category> subCats = category.getChildCategories();
         model.addAttribute("subCategories", subCats);
-
 
         return "categories/category";
 

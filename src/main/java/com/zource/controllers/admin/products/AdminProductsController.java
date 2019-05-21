@@ -7,17 +7,14 @@ package com.zource.controllers.admin.products;
 
 import com.zource.dao.BrandDAO;
 import com.zource.dao.ProductDAO;
-import com.zource.entity.Brand;
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import com.zource.form.ProductForm;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
 import com.zource.validator.ProductFormValidator;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +27,6 @@ import java.util.List;
 
 @ControllerAdvice
 @Controller
-@Transactional
 @RequestMapping("/admin/products")
 public class AdminProductsController {
 
@@ -81,57 +77,49 @@ public class AdminProductsController {
     @GetMapping("/product")
     public String product(Model model, @RequestParam(value = "id", defaultValue = "0") Integer id,
                           @ModelAttribute("info") Info info) {
-        ProductForm productForm = null;
 
+        ProductForm productForm = new ProductForm();
 
-        /*  ServletUriComponentsBuilder.fromCurrentRequest().queryParam("page", 10).toUriString();*/
-
-        if (id == (int) id) {
-            Product product = productDAO.getProductById(id);
+        if (id instanceof Integer) {
+            Product product = productDAO.getById(id);
             if (product != null) {
-                productForm = new ProductForm(product);
-            }
-        }
-        if (productForm == null) {
-            productForm = new ProductForm();
-            productForm.setNewProduct(true);
+                productForm.setProduct(product);
+            } else
+                productForm.setNewProduct(true);
         }
 
-        List<Brand> brands = brandDAO.getAllBrands();
-        for (Brand x : brands)
-            System.out.println(x.getName());
-
-        info.getBreadcrumb().inverse();
         info.setTitle("Product list");
-
         info.setTitle(productForm.getName());
+        info.getBreadcrumb().put(productForm.getName(), "");
+        info.getBreadcrumb().inverse();
 
-        model.addAttribute("brands", brands);
+        model.addAttribute("brands", brandDAO.getAllBrands());
         model.addAttribute("productForm", productForm);
+
         return "admin/products/product";
     }
 
 
     // POST: Save product
-    @PostMapping("/product")
+    @PostMapping("/product/update")
     public String productSave(Model model, //
                               @ModelAttribute("productForm") @Validated ProductForm productForm, //
                               BindingResult result, //
                               RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
+            model.addAttribute("notification", new Notification(result.toString()).warning());
             return "admin/products/product";
         }
         try {
             productDAO.save(productForm);
+
         } catch (Exception e) {
-            Throwable rootCause = ExceptionUtils.getRootCause(e);
-            String message = rootCause.getMessage();
-            System.out.println("MESSSAGE:  " + message);
-            System.out.println("MESSAGE::::  " + message);
-            model.addAttribute("errorMessage", message);
-            model.addAttribute("notification", new Notification("Errors").danger());
-            // Show product form.
+            //Throwable rootCause = ExceptionUtils.getRootCause(e);
+            e.printStackTrace();
+            //model.addAttribute("errorMessage", message);
+            // model.addAttribute("notification", new Notification(message).danger());
+
             return "admin/products/product";
         }
 

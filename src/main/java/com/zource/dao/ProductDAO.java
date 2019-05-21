@@ -1,96 +1,82 @@
 package com.zource.dao;
 
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import com.zource.form.ProductForm;
 import com.zource.model.ProductInfo;
 import com.zource.pagination.PaginationResult;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static com.zource.utils.HibernateUtils.loadAllData;
 
 @Transactional
 @Repository
-@PersistenceContext(type = PersistenceContextType.EXTENDED)
 public class ProductDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
 
     public List<Product> getAllProducts() {
-        return loadAllData(Product.class, sessionFactory.getCurrentSession());
+
+        List<Product> result = loadAllData(Product.class, sessionFactory.getCurrentSession());
+        Initialize(result);
+
+        return result;
     }
 
-    public Product getProductById(Integer id) {
-        Product result = sessionFactory.getCurrentSession().get(Product.class, id);
 
+    public Product getById(Integer id) {
+        Product result = sessionFactory.getCurrentSession().get(Product.class, id);
+        if (result != null)
+            Initialize(result);
         return result;
 
     }
 
     public ProductInfo findProductInfo(Integer id) {
-        Product product = this.getProductById(id);
+        Product product = this.getById(id);
         if (product == null) {
             return null;
         }
         return new ProductInfo(product.getId(), product.getName(), product.getPrice());
     }
 
-    @Transactional
+
+    // MANDATORY: Transaction must be created before.
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(ProductForm productForm) {
 
         Session session = this.sessionFactory.getCurrentSession();
         Integer id = productForm.getId();
-
-        Product product = null;
-
+        Product product = new Product();
         boolean isNew = false;
+
         if (id != null)
-            product = this.getProductById(id);
-
-        System.out.println("PRODUCT name = " + product.getName());
-
-
-        if (product == null) {
-
+            product = this.getById(id);
+        else {
             System.out.println("PRODUCT NULL");
             isNew = true;
-            product = new Product();
-            product.setCreateDate(new Date());
         }
 
-        System.out.println("AFTER PRODUCT NULL");
-        product.setName(productForm.getName());
-        product.setSKU(productForm.getSKU());
-        product.setEnabled(productForm.isEnabled());
-
-        System.out.println("Brand::::  " + productForm.getBrand().getId());
-        product.setBrand(productForm.getBrand());
-        product.setPrice(productForm.getPrice());
-        product.setDescription(productForm.getDescription());
-
-        product.setCreateDate(new Date());
-
-        product.setCategories(productForm.getCategories());
+        product.update(productForm);
 
 
         if (isNew) {
-            System.out.println("PRODUCT PERSIST");
+            System.out.println("PRODUCT PERSISTED");
             session.persist(product);
         } else {
             System.out.println("PRODUCT MERGED: id " + product.getId());
             session.merge(product);
         }
-        // If error in DB, Exceptions will be thrown out immediately
         session.flush();
     }
 
@@ -116,6 +102,22 @@ public class ProductDAO {
 
     public PaginationResult<ProductInfo> queryProducts(int page, int maxResult, int maxNavigationPage) {
         return queryProducts(page, maxResult, maxNavigationPage, null);
+    }
+
+
+    public void Initialize(Product product) {
+        Hibernate.initialize(product.getCategories());
+        Hibernate.initialize(product.getBrand());
+    }
+
+    public void Initialize(Set<Product> set) {
+        for (Product product : set)
+            this.Initialize(product);
+    }
+
+    public void Initialize(List<Product> list) {
+        for (Product product : list)
+            this.Initialize(product);
     }
 
 }

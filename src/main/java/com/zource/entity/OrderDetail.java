@@ -1,5 +1,7 @@
 package com.zource.entity;
 
+import com.zource.entity.product.Product;
+
 import javax.persistence.*;
 import java.io.Serializable;
 

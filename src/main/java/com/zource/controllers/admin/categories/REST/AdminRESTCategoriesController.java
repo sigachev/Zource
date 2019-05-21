@@ -8,6 +8,7 @@ package com.zource.controllers.admin.categories.REST;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zource.dao.CategoryDAO;
 import com.zource.entity.category.Category;
+import com.zource.entity.category.CategorySetFormatter;
 import com.zource.entity.category.CategoryViews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin/rest/categories")
@@ -78,24 +76,42 @@ public class AdminRESTCategoriesController {
         Category category = new Category();
 
         if ((id != 0))
-            category = categoryDAO.getCategoryByID(id);
+            category = categoryDAO.getById(id);
 
 
         return new ResponseEntity(category.getChildCategories(), HttpStatus.OK);
     }
 
-
+    //returns JSON of categories
     @JsonView(CategoryViews.ParentsView.class)
     @GetMapping("/getParentCategories")
-    public ResponseEntity getParentCategoriesIDs(
+    public ResponseEntity getParentCategories(
             @RequestParam(value = "catID", required = false, defaultValue = "0") int id) {
         Category category = new Category();
 
         if ((id != 0) && (id == (int) id))
-            category = categoryDAO.getCategoryByID(id);
-
+            category = categoryDAO.getById(id);
 
         return new ResponseEntity(category.getParentCategories(), HttpStatus.OK);
+    }
+
+    //returns list of ids
+    @GetMapping("/getParentCategoriesIDs")
+    public ResponseEntity getParentCategoriesIDs(
+            @RequestParam(value = "catID", required = false, defaultValue = "0") int id) {
+
+        Category category = new Category();
+        String result = "";
+        CategorySetFormatter categorySetFormatter = new CategorySetFormatter();
+
+        if ((id != 0) && (id == (int) id))
+            category = categoryDAO.getById(id);
+
+        if (category != null)
+            result = categorySetFormatter.print(category.getParentCategories(), Locale.getDefault());
+
+        return new ResponseEntity("[" + result + "]", HttpStatus.OK);
+
     }
 
 
@@ -103,7 +119,7 @@ public class AdminRESTCategoriesController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody String name) {
 
-        Category category = this.categoryDAO.getCategoryByID(id);
+        Category category = this.categoryDAO.getById(id);
         System.out.println("Catedory id = " + category.getId() + " ; Category name = " + category.getName());
 
         if (category != null) {
@@ -120,7 +136,7 @@ public class AdminRESTCategoriesController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Category> addCategory(@PathVariable Integer parentId, @RequestBody String name) {
 
-        Category parentCategory = this.categoryDAO.getCategoryByID(parentId);
+        Category parentCategory = this.categoryDAO.getById(parentId);
         Category cat = null;
         if (parentCategory != null) {
             cat = new Category();

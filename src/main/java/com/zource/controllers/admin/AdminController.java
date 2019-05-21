@@ -2,6 +2,7 @@ package com.zource.controllers.admin;
 
 import com.zource.dao.OrderDAO;
 import com.zource.dao.ProductDAO;
+import com.zource.model.Info;
 import com.zource.model.OrderDetailInfo;
 import com.zource.model.OrderInfo;
 import com.zource.pagination.PaginationResult;
@@ -12,9 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.util.List;
 
@@ -31,6 +34,9 @@ public class AdminController {
 
     @Autowired
     private ProductFormValidator productFormValidator;
+
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
 /*
     @InitBinder
@@ -91,8 +97,7 @@ public class AdminController {
     }
 
 
-
-    @RequestMapping(value = {"/admin/order"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/order"}, method = RequestMethod.GET)
     public String orderView(Model model, @RequestParam("orderId") String orderId) {
         OrderInfo orderInfo = null;
         if (orderId != null) {
@@ -109,4 +114,20 @@ public class AdminController {
         return "order";
     }
 
+
+    @RequestMapping(value = "/endpoints", method = RequestMethod.GET)
+    public String getEndPointsInView(Model model) {
+        model.addAttribute("endPoints", requestMappingHandlerMapping.getHandlerMethods().keySet());
+        return "admin/utils/endPoints";
+    }
+
+
+    @ModelAttribute
+    public void populateModel(Model model) {
+
+        Info info = new Info("admin");
+
+        model.addAttribute("info", info);
+
+    }
 }

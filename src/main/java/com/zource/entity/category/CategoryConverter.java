@@ -19,7 +19,7 @@ public class CategoryConverter implements Converter<String, Category> {
     @Override
     public Category convert(String source) {
 
-        return categoryDAO.getCategoryByID(Integer.parseInt(source));
+        return categoryDAO.getById(Integer.parseInt(source));
 
     }
 

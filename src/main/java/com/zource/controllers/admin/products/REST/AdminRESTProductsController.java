@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -28,26 +29,28 @@ public class AdminRESTProductsController {
     ProductDAO productDAO;
 
 
-    // GET: Category
+    // GET: Category JSON
     @GetMapping("/getProductCategories")
     @JsonView(CategoryViews.ChildrenView.class)
     public ResponseEntity<Set> getProductCategories(@RequestParam(value = "id", required = true, defaultValue = "0") Integer id) {
-        return new ResponseEntity(productDAO.getProductById(id).getCategories(), HttpStatus.OK);
+        return new ResponseEntity(productDAO.getById(id).getCategories(), HttpStatus.OK);
 
     }
 
+    // List of Product Categories IDs
     @GetMapping("/getProductCategoriesIDs")
     @JsonView(CategoryViews.ChildrenView.class)
     public ResponseEntity<Set> getProductCategoriesIDs(@RequestParam(value = "id", required = true, defaultValue = "0") Integer id) {
 
-        Set<Integer> result = new HashSet<>();
+        String result = new String();
+        List arr = new ArrayList();
 
-        if ((id == 0) || productDAO.getProductById(id).getCategories().isEmpty())
+        if ((id == 0) || productDAO.getById(id).getCategories().isEmpty())
             return new ResponseEntity(result, HttpStatus.OK);
 
-        for (Category c : productDAO.getProductById(id).getCategories())
-            result.add(c.getId());
-        return new ResponseEntity(result, HttpStatus.OK);
+        for (Category c : productDAO.getById(id).getCategories())
+            arr.add(c.getId().toString());
+        return new ResponseEntity("[" + String.join(",", arr) + "]", HttpStatus.OK);
 
     }
 }

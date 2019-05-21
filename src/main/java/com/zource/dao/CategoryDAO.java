@@ -6,7 +6,8 @@
 package com.zource.dao;
 
 import com.zource.entity.category.Category;
-import com.zource.form.CategoryForm;
+import com.zource.services.CategoryService;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,14 +26,19 @@ import static com.zource.utils.HibernateUtils.loadAllData;
 
 @Transactional
 @Repository
-public class CategoryDAO {
+public class CategoryDAO implements CategoryService {
+
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    private EntityManager entityManager;
 
     @Autowired
     private SessionFactory sessionFactory;
 
 
     public List<Category> getAllCategories() {
-        return loadAllData(Category.class, sessionFactory.getCurrentSession());
+        List<Category> list = loadAllData(Category.class, sessionFactory.getCurrentSession());
+        Initialize(list);
+        return list;
     }
 
 
@@ -42,79 +50,83 @@ public class CategoryDAO {
             if (cat.getParentCategories().isEmpty())
                 result.add(cat);
 
+        Initialize(result);
+
         return result;
     }
 
-
-    public Category getCategoryByID(Integer id) {
+    public Category getById(Integer id) {
 
         if (id == null)
             return null;
 
-        return sessionFactory.getCurrentSession().get(Category.class, id);
+        Category category = sessionFactory.getCurrentSession().get(Category.class, id);
+        Initialize(category);
+        return category;
 
     }
 
 
-    public Set getChildCategories(Integer categoryId) {
+/*    public Set getChildCategories(Integer categoryId) {
 
-        Category cat = this.getCategoryByID(categoryId);
+        Category cat = this.getById(categoryId);
         Set list = new HashSet();
         if (cat.getChildCategories().toArray() == null) return list;
 
-
         return cat.getChildCategories();
+    }*/
+
+    //Recursively creates list of all parents for this category
+    public List getRecursiveParentsList(Category category) {
+        List result = new ArrayList();
+        if (category == null)
+            return result;
+
+        if (category.getParentCategories() != null)
+            for (Category c : category.getParentCategories()) {
+                sessionFactory.getCurrentSession().update(c);
+                result.add(c.getId());
+
+                result.addAll(getRecursiveParentsList(c));
+            }
+        return result;
+    }
+
+    //Recursively creates list of all children for this category
+    public List getRecursiveChildrenList(Category category) {
+        List result = new ArrayList();
+        if (category == null)
+            return result;
+
+        if (category.getChildCategories() != null)
+            for (Category c : category.getChildCategories()) {
+                sessionFactory.getCurrentSession().update(c);
+                result.add(c.getId());
+
+                result.addAll(getRecursiveChildrenList(c));
+            }
+        return result;
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public void save(CategoryForm catForm) {
+    //Check recursively if any of the parent categories has this category as it's parent
+    //@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public boolean isParentLoop(Category mainCategory, Category newCategory) {
 
-        Session session = this.sessionFactory.getCurrentSession();
-        Integer id = catForm.getId();
-        Category category = null;
+        System.out.println("RECURSIVE CHILDREN Categories: " + getRecursiveChildrenList(mainCategory));
 
-        boolean isNew = false;
-        if (id != null)
-            category = this.getCategoryByID(id);
+        if (getRecursiveChildrenList(mainCategory).contains(newCategory.getId()))
+            return true;
+        else return false;
 
-        System.out.println("CATEGORY FORM name = " + category.getName());
-
-        if (category == null) {
-            isNew = true;
-            category = new Category();
-        }
-
-
-
-        /*   category.setParentCategories(this.getCategoriesByIDs(catForm.getParentIDs()));*/
-        category.update(catForm);
-
-
-        if (isNew) {
-            session.persist(category);
-            System.out.println("## saved " + category);
-        } else {
-            session.merge(category);
-            System.out.println("## merged " + category);
-        }
-        // If error in DB, Exceptions will be thrown out immediately
-        session.flush();
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void update(Category category) {
 
         Session session = this.sessionFactory.getCurrentSession();
 
-        Integer id = category.getId();
-
-        Category cat = null;
-
         session.merge(category);
-
-        session.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -124,26 +136,25 @@ public class CategoryDAO {
     }
 
 
-    public Set<Category> listParentCategoriesByIDs(Set<Integer> ids) {
-        Set<Category> categories = new HashSet<>();
-        for (int id : ids)
-            categories.add(this.getCategoryByID(id));
-        System.out.println("PARENT CATEGORIES: " + categories);
-
-        return categories;
+    private void Initialize(Category category) {
+        if (category.getParentCategories() != null)
+            Hibernate.initialize(category.getParentCategories());
+        if (category.getChildCategories() != null)
+            Hibernate.initialize(category.getChildCategories());
+        if (category.getProducts() != null)
+            Hibernate.initialize(category.getProducts());
+        if (category.getBrand() != null)
+            Hibernate.initialize(category.getBrand());
     }
 
-    public Set<Category> getCategoriesByIDs(Set<Integer> IDs) {
-        Set<Category> result = new HashSet<>();
-        if (!IDs.isEmpty() || IDs != null)
-            for (int id : IDs) {
-                System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-                System.out.println("ID=" + id);
-                System.out.println("Category id  :::::: =====  " + this.getCategoryByID(id));
-                result.add(this.getCategoryByID(id));
-            }
+    private void Initialize(List<Category> list) {
+        for (Category category : list)
+            this.Initialize(category);
+    }
 
-        return result;
+    private void Initialize(Set<Category> set) {
+        for (Category category : set)
+            this.Initialize(category);
     }
 
 

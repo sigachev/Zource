@@ -4,6 +4,7 @@ import com.zource.entity.Brand;
 import com.zource.form.admin.brand.BrandForm;
 import com.zource.model.BrandInfo;
 import com.zource.pagination.PaginationResult;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,6 +23,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.zource.utils.HibernateUtils.loadAllData;
 
@@ -37,6 +39,7 @@ public class BrandDAO {
     public List<Brand> getAllBrands() {
 
         List<Brand> result = loadAllData(Brand.class, sessionFactory.getCurrentSession());
+        Initialize(result);
 
         return result;
     }
@@ -54,6 +57,8 @@ public class BrandDAO {
 
         if (query.getResultList().size() > 0)
             brand = query.getSingleResult();
+
+        Initialize(brand);
 
         return brand;
     }
@@ -76,24 +81,6 @@ public class BrandDAO {
         return em.createQuery(query).getResultList();
     }
 
-    public List getBrandCategories(String id) {
-        EntityManager em = sessionFactory.getCurrentSession().getEntityManagerFactory().createEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Brand> cq = cb.createQuery(Brand.class);
-
-        Root<Brand> Brand = cq.from(com.zource.entity.Brand.class);
-
-        Predicate brandNamePredicate = cb.equal(Brand.get("id"), id);
-        cq.where(brandNamePredicate);
-
-        TypedQuery<com.zource.entity.Brand> query = em.createQuery(cq);
-
-        com.zource.entity.Brand brand = query.getSingleResult();
-
-        List list = new ArrayList(brand.getBrandCategories());
-
-        return list;
-    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void save(BrandForm brandForm) {
@@ -154,6 +141,23 @@ public class BrandDAO {
         }
         return new PaginationResult<BrandInfo>(query, page, maxResult, maxNavigationPage);
     }
+
+
+    private void Initialize(Brand brand) {
+        Hibernate.initialize(brand.getBrandCategories());
+        Hibernate.initialize(brand.getProducts());
+    }
+
+    private void Initialize(Set<Brand> set) {
+        for (Brand brand : set)
+            this.Initialize(brand);
+    }
+
+    private void Initialize(List<Brand> set) {
+        for (Brand brand : set)
+            this.Initialize(brand);
+    }
+
 
 
 }

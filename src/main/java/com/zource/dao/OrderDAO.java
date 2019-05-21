@@ -2,7 +2,7 @@ package com.zource.dao;
 
 import com.zource.entity.Order;
 import com.zource.entity.OrderDetail;
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import com.zource.model.*;
 import com.zource.pagination.PaginationResult;
 import org.hibernate.Session;
@@ -68,7 +68,7 @@ public class OrderDAO {
             detail.setQuanity(line.getQuantity());
 
             Integer id = line.getProductInfo().getId();
-            Product product = this.productDAO.getProductById(id);
+            Product product = this.productDAO.getById(id);
             detail.setProduct(product);
 
             session.persist(detail);

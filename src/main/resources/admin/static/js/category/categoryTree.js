@@ -42,7 +42,7 @@ new Vue({
                 _this.options = json;
             })
 
-            $.getJSON('/admin/rest/categories/getParentCategories?catID=' + catID, function (json) {
+            $.getJSON('/admin/rest/categories/getParentCategoriesIDs?catID=' + catID, function (json) {
                 _this.parentCategoriesValue = json;
             })
 

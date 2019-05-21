@@ -41,7 +41,7 @@
                     <!--LOGO-->
                     <!-- Category logo-->
 
-                    <form th:object="${catForm}" method="POST"
+                    <form th:object="${logoForm}" method="POST"
                           th:action="@{/admin/category/updateLogo}" enctype="multipart/form-data">
 
                         <div class="row mx-2">
@@ -131,9 +131,11 @@
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
 
-                                    <div th:if="${#strings.isEmpty(errorMessage)}" class="error-message"
-                                         th:utext="${errorMessage}">
-
+                                    <!--Error Block-->
+                                    <div th:style="${#strings.isEmpty(errorMessage)} ? 'display:none' : 'display:block'"
+                                         th:utext="${errorMessage}" class="alert alert-danger alert-dismissable">
+                                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×
+                                        </button>
                                     </div>
 
 
@@ -144,7 +146,6 @@
                                         <input type="hidden" th:field="*{id}"/>
 
                                         <fieldset>
-
 
 
                                             <!--ParentCategories-->
@@ -203,6 +204,20 @@
                                                     <span class="text-danger"
                                                           th:if="${#fields.hasErrors('description')}"
                                                           th:errors="*{description}">..</span>
+                                                </div>
+                                            </div>
+
+
+                                            <!--BRAND-->
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Brand:</label>
+                                                <div class="col-sm-4 left">
+                                                    <select th:field="*{brand}" class="form-control m-b">
+                                                        <option th:value="NULL">No Value</option>
+                                                        <option th:each="brand : ${brands}"
+                                                                th:value="${{brand}}"
+                                                                th:text="${brand.name}"></option>
+                                                    </select>
                                                 </div>
                                             </div>
 

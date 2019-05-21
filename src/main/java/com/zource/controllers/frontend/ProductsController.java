@@ -6,7 +6,7 @@
 package com.zource.controllers.frontend;
 
 import com.zource.dao.ProductDAO;
-import com.zource.entity.Product;
+import com.zource.entity.product.Product;
 import com.zource.model.Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -31,7 +31,7 @@ public class ProductsController {
     @RequestMapping("/product/{id}")
     public String getPage(@PathVariable(value = "id") Integer productId, @ModelAttribute("info") Info info, Model model) {
 
-        Product product = productDAO.getProductById(productId);
+        Product product = productDAO.getById(productId);
 
         /*info.getBreadcrumb().put(product.getName(), "/product/"+ productId.toString());
         info.getBreadcrumb().inverse();

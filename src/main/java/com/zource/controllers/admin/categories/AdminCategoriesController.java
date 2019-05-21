@@ -4,11 +4,15 @@
  */
 package com.zource.controllers.admin.categories;
 
+import com.zource.dao.BrandDAO;
 import com.zource.dao.CategoryDAO;
 import com.zource.entity.category.Category;
-import com.zource.form.CategoryForm;
+import com.zource.form.admin.category.CategoryForm;
+import com.zource.form.admin.category.CategoryLogoForm;
 import com.zource.model.Info;
 import com.zource.model.notifications.Notification;
+import com.zource.services.CategoryService;
+import com.zource.services.category.CategoryException;
 import com.zource.services.storage.StorageException;
 import com.zource.services.storage.StorageService;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -23,16 +27,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @ControllerAdvice
-@Transactional
+@SessionAttributes("loginForm")
 public class AdminCategoriesController {
 
     @Autowired
     private CategoryDAO categoryDAO;
+
+    @Autowired
+    private BrandDAO brandDAO;
+
+    @Autowired
+    private CategoryService categoryService;
+
     @Autowired
     private StorageService storageService;
     @Autowired
@@ -54,6 +64,7 @@ public class AdminCategoriesController {
 
     // Category List
     @GetMapping({"/admin/categories"})
+    @Transactional
     public String categoriesList(@RequestParam(value = "search", defaultValue = "", required = false) String search,
                                  @ModelAttribute("info") Info info,
                                  Model model) {
@@ -72,17 +83,20 @@ public class AdminCategoriesController {
     // GET: Category
     @RequestMapping(value = {"/admin/category"}, method = RequestMethod.GET)
     public String brand(Model model, @RequestParam(value = "id", defaultValue = "0", required = false) Integer id,
+                        @ModelAttribute("catForm") CategoryForm catForm,
+                        @ModelAttribute("logoForm") CategoryLogoForm logoForm,
                         @ModelAttribute("info") Info info) {
 
-        CategoryForm catForm = new CategoryForm();
 
         if (id instanceof Integer) {
-            Category category = categoryDAO.getCategoryByID(id);
-            if (category != null)
-                catForm.setCategory(category);
-            else
-                catForm.setNewCategory(true);
+            Category category = categoryService.getById(id);
+            if (category != null) {
+                catForm.update(category);
+                logoForm.updateLogo(category);
+            } else
+                throw new CategoryException("No such category found.");
         }
+
 
         info.setTitle("Category Info");
         info.getBreadcrumb().put("Categories", "/admin/categories");
@@ -98,53 +112,63 @@ public class AdminCategoriesController {
     // POST: Save category
     @PostMapping("/admin/category/update")
     public String categorySave(Model model, //
-                               @ModelAttribute("catForm") @Valid CategoryForm catForm,
+                               @ModelAttribute CategoryLogoForm logoForm,
+                               @ModelAttribute("catForm") @Valid CategoryForm categoryForm,
                                BindingResult bindingResult,
                                @ModelAttribute("info") Info info,
                                RedirectAttributes redirectAttributes) {
 
+        Category category = categoryDAO.getById(categoryForm.getId());
+        category.update(categoryForm);
+        logoForm.updateLogo(category);
+
         if (bindingResult.hasErrors()) {
             System.out.println("##ERRORS");
-            catForm.setCategory(categoryDAO.getCategoryByID(catForm.getId()));
             model.addAttribute("notification", new Notification(bindingResult.toString()).warning());
             return "admin/categories/category";
         }
 
+        //Check for parent categories loop
+        if (categoryForm.getParentCategories() != null)
+            for (Category c : categoryForm.getParentCategories())
+                if (categoryDAO.isParentLoop(categoryDAO.getById(categoryForm.getId()), c)) {
+                    model.addAttribute("notification", new Notification("Cannot assign parent category with id = " + c.getId() + " and name = \"" + c.getName() + "\". It creates a parent category loop.").warning());
+                    return "admin/categories/category";
+                }
+
 
         try {
-            categoryDAO.save(catForm);
+            categoryDAO.update(category);
         } catch (Exception e) {
 
-            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            /*   Throwable rootCause = ExceptionUtils.getRootCause(e);*/
             String message = ExceptionUtils.getStackTrace(e);
-            redirectAttributes.addFlashAttribute("notification", new Notification(message).danger());
-            return "redirect:/admin/category?id=" + catForm.getId();
+          /*  redirectAttributes.addFlashAttribute("notification", new Notification(message).danger());
+            return "redirect:/admin/category?id=" + categoryForm.getId();*/
+
+            throw new CategoryException(message);
         }
 
         redirectAttributes.addFlashAttribute("notification", new Notification("Category updated!").success());
-        return "redirect:/admin/category?id=" + catForm.getId();
+        return "redirect:/admin/category?id=" + categoryForm.getId();
     }
 
 
     // POST: Do Upload
     @PostMapping("/admin/category/updateLogo")
-    public String uploadCategoryLogoPOST(Model model,
-                                         @ModelAttribute("categoryForm") CategoryForm categoryForm, RedirectAttributes redirectAttributes) {
+    public String uploadCategoryLogoPOST(Model model, @ModelAttribute("logoForm") CategoryLogoForm logoForm, RedirectAttributes redirectAttributes) {
 
-        String uploadedFileName = storageService.updateCategoryLogo(categoryForm.getLogoFile(), categoryDAO.getCategoryByID(categoryForm.getId()));
+        Category category = categoryDAO.getById(logoForm.getId());
+        storageService.updateCategoryLogo(logoForm.getLogoFile(), category);
+        redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + logoForm.getLogoFileName()).success());
 
-        if (uploadedFileName.length() > 0) {
-            categoryForm.setLogoFileName(uploadedFileName);
-            categoryDAO.save(categoryForm);
-            redirectAttributes.addFlashAttribute("notification", new Notification("File uploaded :" + uploadedFileName).success());
-        }
 
-        return "redirect:/admin/category?id=" + categoryForm.getId();
+        return "redirect:/admin/category?id=" + logoForm.getId();
     }
 
 
     @ModelAttribute
-    public void populateInfo(Model model) {
+    public void populateModel(Model model) {
         Info info = new Info("admin");
 
         /* CSS LIST*/
@@ -156,18 +180,20 @@ public class AdminCategoriesController {
         /*BOTTOM JS LIST*/
         info.getBottomJsList().add("/admin/js/category/categoryTree.js");
 
-        List<String> brandTypes = new ArrayList<>();
-        brandTypes.add("tile");
-        brandTypes.add("installation");
-        brandTypes.add("cabinets");
-
+        model.addAttribute("brands", brandDAO.getAllBrands());
         model.addAttribute("info", info);
-        model.addAttribute("catTypes", brandTypes);
+
     }
 
 
     @ExceptionHandler(StorageException.class)
     public String handleStorageFileNotFound(StorageException e, final RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("notification", new Notification(e.getMessage()).warning());
+        return "redirect:" + e.getPageURL();
+    }
+
+    @ExceptionHandler(CategoryException.class)
+    public String handleCategoryExceptions(CategoryException e, final RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("notification", new Notification(e.getMessage()).warning());
         return "redirect:" + e.getPageURL();
     }

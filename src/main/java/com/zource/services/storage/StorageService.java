@@ -5,8 +5,10 @@
 
 package com.zource.services.storage;
 
+import com.zource.dao.CategoryDAO;
 import com.zource.entity.category.Category;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,10 @@ import java.io.IOException;
 
 @Service
 public class StorageService {
+
+    @Autowired
+    CategoryDAO categoryDAO;
+
     @Value("${file.upload.rootPath}")
     private String rootPath;
 
@@ -71,7 +77,7 @@ public class StorageService {
     }
 
 
-    public String updateCategoryLogo(MultipartFile file, Category category) {
+    public void updateCategoryLogo(MultipartFile file, Category category) {
 
         String uploadRootPath = rootPath + "/images/categories/" + category.getId() + "/";
         File uploadRootDir = new File(uploadRootPath);
@@ -89,12 +95,12 @@ public class StorageService {
         String detectedType = tika.detect(file.getOriginalFilename());
         System.out.println(detectedType);*/
 
-        return uploadFile(file, uploadRootDir);
+        uploadFile(file, uploadRootDir, category);
     }
 
-    private String uploadFile(MultipartFile uploadFile, File uploadDir) {
+    private void uploadFile(MultipartFile uploadFile, File uploadDir, Category category) {
 
-        String uploadedFileName = "";
+        String uploadedFileName;
 
         // Client File Name
         String name = uploadFile.getOriginalFilename();
@@ -113,6 +119,9 @@ public class StorageService {
 
                 uploadedFileName = serverFile.getName();
 
+                category.setLogoFileName(uploadedFileName);
+                categoryDAO.update(category);
+
             } catch (IOException e) {
                 String msg = String.format("Failed to store file", uploadFile.getName());
                 throw new StorageException(msg, e);
@@ -120,6 +129,5 @@ public class StorageService {
         }
 
 
-        return uploadedFileName;
     }
 }

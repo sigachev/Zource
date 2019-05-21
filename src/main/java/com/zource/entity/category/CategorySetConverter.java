@@ -29,7 +29,7 @@ public class CategorySetConverter implements Converter<String, Set<Category>> {
 
         for (String st : arr) {
             id = Integer.parseInt(st);
-            result.add(categoryDAO.getCategoryByID(id));
+            result.add(categoryDAO.getById(id));
         }
         return result;
     }

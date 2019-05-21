@@ -7,13 +7,15 @@ package com.zource.entity.category;
 
 import com.fasterxml.jackson.annotation.*;
 import com.zource.entity.Brand;
-import com.zource.entity.Product;
-import com.zource.form.CategoryForm;
+import com.zource.entity.product.Product;
+import com.zource.form.admin.category.CategoryForm;
+import com.zource.form.admin.category.CategoryLogoForm;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -49,29 +51,28 @@ public class Category {
     private String topBanner;
 
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "parent_child_category",
-            joinColumns = @JoinColumn(name = "child_id"),
-            inverseJoinColumns = @JoinColumn(name = "parent_id"))
+            joinColumns = @JoinColumn(name = "child_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "parent_id", nullable = false))
     @JsonProperty("parents")
     @JsonView(CategoryViews.ParentsView.class)
+    private Set<Category> parentCategories = new HashSet<>();
 
-    private Set<Category> parentCategories = new HashSet<Category>();
 
-
-    @ManyToMany(mappedBy = "parentCategories", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "parentCategories", fetch = FetchType.LAZY)
     @JsonProperty("children")
     @JsonView(CategoryViews.ChildrenView.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<Category> childCategories = new HashSet<Category>();
+    private Set<Category> childCategories = new HashSet<>();
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_id")
-    private Brand brand;
+    private Brand brand = new Brand();
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 
     public Category() {
@@ -79,30 +80,34 @@ public class Category {
 
     public void update(CategoryForm catForm) {
 
-
         //do not set id, otherwise new row in DB will be created
         this.setName(catForm.getName());
         this.setDescription(catForm.getDescription());
-        this.setLogoFileName(catForm.getLogoFileName());
-
+        this.setBrand(catForm.getBrand());
         //update parent categories
         this.setParentCategories(catForm.getParentCategories());
     }
 
-
-/*    public Set<Integer> getChildrenIDs() {
-        Set result = new HashSet();
-        for (Category cat : this.getChildCategories()) {
-            result.add(cat.getId());
-        }
-        return result;
+    public void update(CategoryLogoForm logoForm) {
+        this.setLogoFileName(logoForm.getLogoFileName());
     }
 
-    public Set<Integer> getParentIDs() {
-        Set result = new HashSet();
-        for (Category cat : this.getParentCategories()) {
-            result.add(cat.getId());
-        }
-        return result;
-    }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Category)) return false;
+        Category category = (Category) o;
+        return Objects.equals(getId(), category.getId()) &&
+                Objects.equals(getName(), category.getName()) &&
+                Objects.equals(getDescription(), category.getDescription()) &&
+                Objects.equals(getLogoFileName(), category.getLogoFileName()) &&
+                Objects.equals(getTopBanner(), category.getTopBanner()) &&
+                Objects.equals(getBrand(), category.getBrand());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getDescription(), getLogoFileName(), getTopBanner(), getBrand());
+    }
 }

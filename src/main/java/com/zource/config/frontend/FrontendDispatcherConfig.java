@@ -172,8 +172,9 @@ public class FrontendDispatcherConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addFormatter(brandFormatter);
-        registry.addFormatter(categorySetFormatter);
         registry.addConverter(categoryConverter);
+        registry.addFormatter(categorySetFormatter);
+
     }
 
 
